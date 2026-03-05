@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: rabbitmq-itsys-001-mgmt
+  namespace: itsystems-lab
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rabbitmq-itsys-lab-ca-001-mgmt.medimpact.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rabbitmq-itsys-001
+            port:
+              number: 15672
+  tls:
+  - hosts:
+    - rabbitmq-itsys-lab-ca-001-mgmt.medimpact.com

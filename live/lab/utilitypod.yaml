@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: utilitypod
+  name: utilitypod
+  # namespace: ai-dev
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: utilitypod
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      # annotations:
+        # traffic.sidecar.istio.io/excludeOutboundPorts: "8200"
+        # vault.hashicorp.com/agent-cache-enable: "true"
+        # vault.hashicorp.com/agent-inject: "true"
+        # vault.hashicorp.com/agent-inject-secret-config: ssis-database/creds/test-short-ttl
+        # vault.hashicorp.com/agent-inject-template-config: |
+          # {{ with secret "ssis-database/creds/test-short-ttl" -}}
+            # export SPRING_DATASOURCE_USERNAME="{{ .Data.username }}"
+            # export SPRING_DATASOURCE_PASSWORD="{{ .Data.password }}"
+          # {{- end }}
+        # vault.hashicorp.com/agent-pre-populate: "true"
+        # vault.hashicorp.com/role: test-short-ttl
+        # vault.hashicorp.com/tls-skip-verify: "true"
+      labels:
+        app: utilitypod
+    spec:
+      containers:
+      - args:
+        - -c
+        - while [ true ]; do sleep 5; done
+        # - source /vault/secrets/config && sleep 8640
+        command:
+        - sh
+        image: docker-local.artifactory.medimpact.com/dockerhub/python:3.11-slim-buster
+        imagePullPolicy: Always
+        name: utilitypod
+        resources:
+          limits:
+            cpu: "1"
+            memory: 400Mi
+            ephemeral-storage: 10Gi
+          requests:
+            cpu: 10m
+            memory: 395Mi
+        volumeMounts:
+        - mountPath: /app/pylibs
+          name: pylibs
+      securityContext:
+        runAsUser: 70600
+        fsGroup: 70600
+      volumes:
+      - name: pylibs
+        persistentVolumeClaim:
+          claimName: pylibs-nonprod
+      # serviceAccountName: ai-default

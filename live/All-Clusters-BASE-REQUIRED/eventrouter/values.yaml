@@ -1,0 +1,13 @@
+# Default values for eventrouter chart
+# This chart deploys EventRouter for Kubernetes event logging
+
+# No configuration needed - all resources are deployed as-is
+# This chart is designed to be deployment-target agnostic
+# The target cluster is determined by kubeconfig context only
+
+# EventRouter captures Kubernetes events and routes them to stdout
+# These events are then collected by Fluentd and sent to Splunk
+
+# To add new eventrouter resources:
+# 1. Add new YAML files to the templates/ directory
+# 2. Run helm upgrade - no code changes required

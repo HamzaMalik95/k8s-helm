@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pullimage
+  labels:
+    app: pullimage
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: pullimage
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 100%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pullimage
+    spec:
+      tolerations:
+      - operator: Exists
+      # - key: node-role.kubernetes.io/master
+        # effect: NoSchedule
+      # - key: dmz
+        # effect: NoExecute
+        # operator: Exists
+      containers:
+      - name: pullimage
+        image: docker-local.artifactory.medimpact.com/com/medimpact/podrestarter-kubectl:latest
+        imagePullPolicy: Always
+        command:
+        - /bin/sh
+        - -c
+        - while [ true ]; do sleep 60; done
+        resources:
+          limits:
+            cpu: 100m
+            memory: 10Mi
+          requests:
+            cpu: 1m
+            memory: 5Mi

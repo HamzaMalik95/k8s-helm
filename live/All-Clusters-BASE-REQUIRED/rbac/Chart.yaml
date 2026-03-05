@@ -1,0 +1,13 @@
+apiVersion: v2
+name: rbac
+description: Cluster-wide RBAC roles and bindings for Kubernetes clusters
+type: application
+version: 1.0.0
+appVersion: "1.0"
+keywords:
+  - rbac
+  - clusterroles
+  - clusterrolebindings
+  - permissions
+maintainers:
+  - name: Platform Team

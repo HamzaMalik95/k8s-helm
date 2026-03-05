@@ -1,0 +1,54 @@
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: mynamespace
+spec:
+  hard:
+    limits.cpu: 20000m
+    limits.memory: 8G
+    requests.cpu: 2000m
+    requests.memory: 7G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: mynamespace
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+    defaultRequest:
+      cpu: 50m
+      memory: 100M
+    type: Container
+
+---
+#default deny network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: mynamespace
+spec:
+  podSelector: {}
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: namespace-owner
+  namespace: mynamespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: oidc:namespace-owner

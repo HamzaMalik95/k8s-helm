@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: inform-qa-filedrop
+  namespace: mfs-qa
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 28G
+  selector:
+    matchLabels:
+      volname: mfs-qa.inform-qa-filedrop

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: azurechatgpt
+  # namespace: itsystems-dev
+spec:
+  type: ClusterIP
+  ports:
+  - name: http-azurechatgpt
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: azurechatgpt

@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apim-dev
+  namespace: argocd
+spec:
+  description: API Management
+  destinations:
+  - name: '*'
+    namespace: apim-dev
+    server: '*'
+  - name: '*'
+    namespace: apim-qa
+    server: '*'
+  - name: '*'
+    namespace: apim-prod
+    server: '*'
+  roles:
+  - groups:
+    - Kube_dev_apim-dev
+    name: admin
+    policies:
+    - p, proj:apim-dev:admin, applications, *, apim-dev/*, allow
+  sourceRepos:
+  - https://bitbucket.medimpact.com/scm/apiman/api-explorer.git

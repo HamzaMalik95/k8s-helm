@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+type: Opaque
+stringData:
+  datasources.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus-k8s.monitoring.svc:9090",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-etcd",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus.monitoring-etcd.svc:9090",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-vault",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus.vault-dev.svc:9090",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-istio",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus.istio-system.svc:9090",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-calab",
+                "orgId": 1,
+                "type": "prometheus",
+                "basicAuth":true,
+                "basicAuthUser":"consume",
+                "secureJsonData": {
+                  "basicAuthPassword": "IdNFZzvJn7M4VMW8DQzk"
+                },
+                "url": "https://k8calab.medimpact.com/prometheus",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-cadev",
+                "orgId": 1,
+                "type": "prometheus",
+                "basicAuth":true,
+                "basicAuthUser":"consume",
+                "secureJsonData": {
+                  "basicAuthPassword": "IdNFZzvJn7M4VMW8DQzk"
+                },
+                "url": "https://k8cadev.medimpact.com/prometheus",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-caprod",
+                "orgId": 1,
+                "type": "prometheus",
+                "basicAuth":true,
+                "basicAuthUser":"consume",
+                "secureJsonData": {
+                  "basicAuthPassword": "IdNFZzvJn7M4VMW8DQzk"
+                },
+                "url": "https://k8caprod.medimpact.com/prometheus",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "prometheus-azprod",
+                "orgId": 1,
+                "type": "prometheus",
+                "basicAuth":true,
+                "basicAuthUser":"consume",
+                "secureJsonData": {
+                  "basicAuthPassword": "IdNFZzvJn7M4VMW8DQzk"
+                },
+                "url": "https://k8azprod.medimpact.com/prometheus",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "old-victoriametrics",
+                "orgId": 1,
+                "type": "prometheus",
+                "basicAuth":true,
+                "basicAuthUser":"consume",
+                "secureJsonData": {
+                  "basicAuthPassword": "IdNFZzvJn7M4VMW8DQzk"
+                },
+                "url": "https://k8calab.medimpact.com/vmselect/select/0/prometheus",
+                "version": 1
+            },
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "default-victoriametrics",
+                "orgId": 1,
+                "type": "prometheus",
+                "basicAuth":true,
+                "basicAuthUser":"consume",
+                "secureJsonData": {
+                  "basicAuthPassword": "IdNFZzvJn7M4VMW8DQzk"
+                },
+                "url": "https://k8cadev.medimpact.com/vmselect/select/0/prometheus",
+                "version": 1
+            }
+        ]
+    }

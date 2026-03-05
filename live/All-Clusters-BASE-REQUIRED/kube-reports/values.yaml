@@ -1,0 +1,40 @@
+# Default values for kube-reports chart
+# This chart deploys Kube Reports for Kubernetes resource reporting
+
+# Namespace where kube-reports will be deployed
+# Different clusters use different namespaces:
+#   cadev/calab: itsystems-dev
+#   caprod: itsystems-prod
+#   azprod: itsystems-lab
+namespace: "itsystems-dev"
+
+# RBAC configuration
+rbac:
+  create: true
+  serviceAccountName: kube-reports-serviceaccount
+
+# Ingress configuration
+ingress:
+  enabled: false
+  host: ""
+  path: /report
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      sub_filter '<head>' '<head> <base href="/report/">'; #add base url
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  tls:
+    enabled: true
+
+# Cluster-specific namespace mappings:
+# cadev: itsystems-dev
+# calab: itsystems-dev
+# caprod: itsystems-prod
+# azprod: itsystems-lab
+
+# Cluster-specific hostname mappings:
+# cadev: k8cadev.medimpact.com
+# calab: k8calab.medimpact.com
+# caprod: k8caprod.medimpact.com
+# azprod: k8azprod.medimpact.com

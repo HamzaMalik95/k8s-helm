@@ -1,0 +1,14 @@
+apiVersion: v2
+name: nginx-ingress
+description: NGINX Ingress Controller for Kubernetes HTTP/HTTPS ingress
+type: application
+version: 1.11.3
+appVersion: "v1.11.3"
+keywords:
+  - nginx
+  - ingress
+  - ingress-controller
+  - loadbalancer
+  - networking
+maintainers:
+  - name: Platform Team

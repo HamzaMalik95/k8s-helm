@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: gravitee-lab
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: gravitee-lab
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: docker-local.artifactory.medimpact.com/dockerhub/redis:7.0.6-alpine
+        imagePullPolicy: IfNotPresent
+        command: ["redis-server"]
+        args: ["/etc/redis/redis.conf"]
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - if [ $(redis-cli -p 6379 -a "ahzuth3theiGhah" ping) != "PONG" ]; then exit 1;fi
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - if [ $(redis-cli -p 6379 -a "ahzuth3theiGhah" ping) != "PONG" ]; then exit 1;fi
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 500Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /etc/redis/
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: redis-config
+      securityContext:
+        runAsUser: 999
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

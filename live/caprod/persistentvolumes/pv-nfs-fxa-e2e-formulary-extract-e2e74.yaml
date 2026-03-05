@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.fxa-e2e.formulary-extract-e2e74
+  labels: 
+    volname:  fxa-e2e.formulary-extract-e2e74
+spec:
+  capacity:
+    storage: 25Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.13.130.93
+    path: "/vol_pv1medvfiler4_formulary_extract_e2e74/formulary_extract_e2e74"

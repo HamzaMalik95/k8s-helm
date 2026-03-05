@@ -1,0 +1,18 @@
+# Default values for nginx-ingress chart
+# This chart deploys NGINX Ingress Controller
+
+# No configuration needed - all resources are deployed as-is
+# This chart is designed to be deployment-target agnostic
+# The target cluster is determined by kubeconfig context only
+
+# NGINX Ingress Controller version: 1.11.3
+# Includes:
+#   - Main ingress controller deployment
+#   - External ingress controller deployment
+#   - TLS secrets
+#   - Prometheus monitoring RBAC
+#   - Health check service
+
+# To add new ingress controller resources:
+# 1. Add new YAML files to the templates/ directory
+# 2. Run helm upgrade - no code changes required

@@ -1,0 +1,14 @@
+# Default values for metrics-server chart
+# This chart deploys Metrics Server for Kubernetes metrics collection
+
+# No configuration needed - all resources are deployed as-is
+# This chart is designed to be deployment-target agnostic
+# The target cluster is determined by kubeconfig context only
+
+# Metrics Server version: 0.7.2
+# Supports Kubernetes 1.21+
+# High-availability deployment with multiple replicas
+
+# To add new metrics-server resources:
+# 1. Add new YAML files to the templates/ directory
+# 2. Run helm upgrade - no code changes required

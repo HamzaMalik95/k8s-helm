@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ppdl-prod-mirror
+  namespace: dmp-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 19Gi
+  # storageClassName: nfs
+  selector:
+    matchLabels:
+      volname: dmp-prod.ppdl-prod-mirror

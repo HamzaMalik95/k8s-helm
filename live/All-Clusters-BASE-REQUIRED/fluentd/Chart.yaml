@@ -1,0 +1,14 @@
+apiVersion: v2
+name: fluentd
+description: Fluentd DaemonSet for log aggregation and shipping to Splunk
+type: application
+version: 1.0.0
+appVersion: "1.0"
+keywords:
+  - fluentd
+  - logging
+  - splunk
+  - log-aggregation
+  - observability
+maintainers:
+  - name: Platform Team

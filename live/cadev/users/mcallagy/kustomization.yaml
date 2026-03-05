@@ -1,0 +1,7 @@
+namespace: mcallagy
+bases:
+- ./../base
+patches:
+- custom.yaml
+resources:
+- namespace.yaml

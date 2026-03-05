@@ -1,0 +1,14 @@
+apiVersion: v2
+name: gatekeeper
+description: OPA Gatekeeper for Kubernetes policy enforcement and admission control
+type: application
+version: 3.17.0
+appVersion: "v3.17.0"
+keywords:
+  - gatekeeper
+  - opa
+  - policy
+  - admission-controller
+  - security
+maintainers:
+  - name: Platform Team

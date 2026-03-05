@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pg1-parules.pg1-parules.tcp5432
+  namespace: pas-dev
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: pg1-parules
+    ports:
+    - port: 5432
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: pg1-parules
+  policyTypes:
+  - Ingress

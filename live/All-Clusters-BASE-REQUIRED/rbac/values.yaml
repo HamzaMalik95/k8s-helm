@@ -1,0 +1,10 @@
+# Default values for rbac chart
+# This chart deploys cluster-wide RBAC resources
+
+# No configuration needed - all RBAC resources are deployed as-is
+# This chart is designed to be deployment-target agnostic
+# The target cluster is determined by kubeconfig context only
+
+# To add new RBAC resources:
+# 1. Add new YAML files to the templates/ directory
+# 2. Run helm upgrade - no code changes required

@@ -1,0 +1,81 @@
+# Allow istio-ingressgateway to rtbc-service
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-istio.rtbc-ws.8080
+  namespace: pos
+spec:
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            namespace: istio-system
+        podSelector:
+          matchLabels:
+            app: istio-ingressgateway
+      ports:
+      - port: 8080
+        protocol: TCP
+  podSelector:
+    matchLabels:
+      app: rtbc
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: rtbc-ws
+  namespace: pos
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - hosts:
+    - "k8posdev.medimpact.com"
+    port:
+      number: 80
+      name: http
+      protocol: HTTP
+    tls:
+      httpsRedirect: true # sends 301 redirect for http requests
+  - hosts:
+    - "k8posdev.medimpact.com"
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: rtbc-ws
+  namespace: pos
+spec:
+  hosts:
+  - "k8posdev.medimpact.com"
+  gateways:
+  - rtbc-ws
+  http:
+  - match:
+    - uri:
+        prefix: /services/RxBenefitCheck-v1_0
+    # additional example uris below
+    # - uri:
+        # exact: /productpage
+    # - uri:
+        # prefix: /static
+    # - uri:
+        # exact: /login
+    # - uri:
+        # exact: /logout
+    route:
+    - destination:
+        host: rtbc-service
+        port:
+          number: 8080

@@ -1,0 +1,13 @@
+apiVersion: v2
+name: coredns
+description: CoreDNS deployment for Kubernetes cluster DNS service
+type: application
+version: 1.10.1
+appVersion: "v1.10.1"
+keywords:
+  - coredns
+  - dns
+  - kube-dns
+  - networking
+maintainers:
+  - name: Platform Team

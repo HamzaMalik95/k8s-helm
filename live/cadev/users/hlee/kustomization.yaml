@@ -1,0 +1,7 @@
+namespace: hlee
+bases:
+- ./../base
+patches:
+- custom.yaml
+resources:
+- namespace.yaml

@@ -1,0 +1,31 @@
+# Default values for fluentd chart
+# This chart deploys Fluentd for log aggregation and shipping to Splunk
+
+# Cluster name - REQUIRED
+# This value must be set for each cluster deployment
+# Examples: cadev, calab, caprod, azprod, aks-aks-dev-westus2-001, etc.
+clusterName: ""
+
+# Splunk HEC configuration
+# The secrets should be updated in templates/4-secret-splunk-hec-tokens.yaml
+splunk:
+  # Splunk HEC tokens are stored in Kubernetes secret
+  # Update the secret file with actual tokens before deployment
+  hec:
+    enabled: true
+
+# Fluentd configuration
+fluentd:
+  namespace: fluentd
+
+# Resources are defined in the DaemonSet template
+# No overrides needed unless customization is required
+
+# NOTE: This chart deploys resources in numbered order (1-6):
+# 1. Namespace with LimitRange and NetworkPolicy
+# 2. ServiceAccount, ClusterRole, ClusterRoleBinding
+# 3. PodSecurityPolicy
+# 4. Secret (Splunk HEC tokens)
+# 5. ConfigMap (Fluentd configuration)
+# 6. DaemonSet (Fluentd pods)
+# 7. Cluster-specific ConfigMap (cluster name)

@@ -1,0 +1,147 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+spec:
+  serviceName: redis
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - redis
+            topologyKey: kubernetes.io/hostname
+      initContainers:
+      - name: config
+        image: docker-local.artifactory.medimpact.com/dockerhub/redis:7.0.11-alpine
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MY_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: REDIS_PASSWORD
+          value: "dok2maiNahX%"
+        command: [ "sh", "-c" ]
+        args:
+          - |
+            HOSTNAME="$(hostname)"
+            REDIS_NAME="${HOSTNAME%-*}"
+            MASTER_FQDN=${REDIS_NAME}-0.${REDIS_NAME}.${MY_NAMESPACE}.svc.cluster.local
+            POD_FQDN=$(hostname -f)
+            cp /tmp/redis/redis.conf /etc/redis/redis.conf
+            echo "replica-announce-ip  $POD_FQDN" >> /etc/redis/redis.conf
+            echo "replica-announce-port 6379" >> /etc/redis/redis.conf
+            echo "masterauth \"${REDIS_PASSWORD}\"" >> /etc/redis/redis.conf
+            echo "requirepass \"${REDIS_PASSWORD}\"" >> /etc/redis/redis.conf
+            if [ "$POD_FQDN" =  "$MASTER_FQDN" ]; then
+                echo "this is master, not updating config..."
+            else
+                echo "updating replica redis.conf..."
+                echo "replicaof $MASTER_FQDN 6379" >> /etc/redis/redis.conf
+            fi
+            cat /etc/redis/redis.conf
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: redis-config
+          mountPath: /etc/redis/
+        - name: config
+          mountPath: /tmp/redis/
+      containers:
+      - name: redis
+        image: docker-local.artifactory.medimpact.com/dockerhub/redis:7.0.11-alpine
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: REDIS_PASSWORD
+          value: "dok2maiNahX%"
+        command: ["redis-server"]
+        args: ["/etc/redis/redis.conf"]
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - if [ $(redis-cli -p 6379 --no-auth-warning -a "${REDIS_PASSWORD}" ping) == "PONG" ]; then exit 0; else exit 1;fi
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - if [ $(redis-cli -p 6379 --no-auth-warning -a "${REDIS_PASSWORD}" ping) == "PONG" ]; then exit 0; else exit 1;fi
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          limits:
+            cpu: "1"
+            memory: 500Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: redis-config
+          mountPath: /etc/redis/
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: redis-config
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: redis-config
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+       - ReadWriteOnce
+      storageClassName: itsystems-dev
+      resources:
+        requests:
+          storage: 500Mi
+  updateStrategy:
+    type: RollingUpdate

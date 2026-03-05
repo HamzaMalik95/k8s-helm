@@ -1,0 +1,13 @@
+apiVersion: v2
+name: kube-reports
+description: Kube Reports for live Kubernetes resource reporting and visualization
+type: application
+version: 1.0.0
+appVersion: "1.0"
+keywords:
+  - kube-reports
+  - reporting
+  - kubernetes
+  - visualization
+maintainers:
+  - name: Platform Team

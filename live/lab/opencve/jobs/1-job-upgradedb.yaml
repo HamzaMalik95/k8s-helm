@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: opencve-job-upgrade-db
+spec:
+  template:
+    spec:
+      containers:
+      - name: opencve-upgrade
+        image: docker-local.artifactory.medimpact.com/com.medimpact/itsec/opencve:1.4.1-mi0.0.1
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args: ["opencve upgrade-db"]
+        # args: ["webserver", "opencve", "upgrade-db"]
+        envFrom:
+        - configMapRef:
+            name: opencve-env
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "500Mi"
+          requests:
+            cpu: "0"
+            memory: "400Mi"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+      volumes:
+      - name: config
+        configMap:
+          name: opencve-config
+      restartPolicy: Never
+  backoffLimit: 4

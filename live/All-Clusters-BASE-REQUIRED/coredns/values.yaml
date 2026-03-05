@@ -1,0 +1,41 @@
+# Default values for coredns chart
+# This chart deploys CoreDNS for cluster DNS resolution
+
+# CoreDNS configuration
+coredns:
+  # Number of CoreDNS replicas
+  replicas: 5
+
+  # CoreDNS image
+  image:
+    repository: registry.k8s.io/coredns/coredns
+    tag: v1.10.1
+    pullPolicy: IfNotPresent
+
+  # Resource limits and requests
+  resources:
+    limits:
+      memory: 350Mi
+    requests:
+      cpu: 500m
+      memory: 170Mi
+
+  # Enable query logging (set to true for debugging)
+  # Default: false (disabled for performance)
+  # Set to true for calab cluster or debugging
+  enableLogging: false
+
+  # Corefile configuration
+  # The Corefile will be templated with the enableLogging flag
+  # No manual Corefile editing needed - use enableLogging flag instead
+
+# Namespace
+namespace: kube-system
+
+# ServiceAccount
+serviceAccount:
+  name: coredns
+
+# Note: This chart assumes CoreDNS Service and ServiceAccount already exist
+# If deploying to a fresh cluster, you may need to create these resources first
+# The chart only manages the Deployment and ConfigMap

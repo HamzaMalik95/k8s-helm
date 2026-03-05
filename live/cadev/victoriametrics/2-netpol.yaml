@@ -1,0 +1,61 @@
+# deny-from-other-namespaces
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: victoriametrics
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+  - from:
+    - podSelector: {}
+---
+# Allow nginx-ingress to vminsert
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress.vminsert.8480
+  namespace: victoriametrics
+spec:
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            namespace: ingress-nginx 
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/name: ingress-nginx
+      ports:
+      - port: 8480
+        protocol: TCP
+  podSelector:
+    matchLabels:
+      app: vminsert
+  policyTypes:
+  - Ingress
+---
+# Allow nginx-ingress to vminsert
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress.vmselect.8481
+  namespace: victoriametrics
+spec:
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            namespace: ingress-nginx 
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/name: ingress-nginx
+      ports:
+      - port: 8481
+        protocol: TCP
+  podSelector:
+    matchLabels:
+      app: vmselect
+  policyTypes:
+  - Ingress

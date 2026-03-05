@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq-itsys-001
+  namespace: itsystems-lab
+spec:
+  serviceName: rabbitmq-itsys-001
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rabbitmq-itsys-001
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-itsys-001
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - rabbitmq-itsys-001
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - name: rabbitmq
+        image: docker-local.artifactory.medimpact.com/docker.io/rabbitmq:3.12.0-alpine
+        imagePullPolicy: IfNotPresent
+        # command:
+          # - rabbitmq-server
+          # - start
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_STS_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app']
+        - name: K8S_SERVICE_NAME
+          value: $(MY_STS_NAME)
+        - name: RABBITMQ_USE_LONGNAME
+          value: "true"
+        - name: RABBITMQ_NODENAME
+          value: rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: "royTGJ1U6RGec8AYlUMcSg4oK8qNKurWr/z2XQ=="
+        - name: RABBITMQ_MNESIA_BASE
+          value: "/data"
+        - name: RABBITMQ_MAX_MEM
+          value: "350MiB"
+        - name: RABBITMQ_CLUSTER_NAME
+          # value: "$(K8S_SERVICE_NAME)-$(MY_POD_NAMESPACE)-calab"
+          value: "rabbitmq-itsys-lab-ca-001"
+        - name: RABBITMQ_USERNAME
+          value: "admin"
+        - name: RABBITMQ_PASSWORD
+          value: "Hainoz2oquiv"
+        livenessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "status"]
+            # command:
+            # - rabbitmq-diagnostics
+            # - status
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "ping"]
+            # command:
+            # - rabbitmq-diagnostics
+            # - ping
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        ports:
+        - name: http-mgmt
+          protocol: TCP
+          containerPort: 15672
+        - name: amqp
+          protocol: TCP
+          containerPort: 5672
+        - name: epmd
+          protocol: TCP
+          containerPort: 4369
+        resources:
+          limits:
+            cpu: "2"
+            memory: 400Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /etc/rabbitmq
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      # - name: data
+        # emptyDir: {}
+      - name: config
+        configMap:
+          name: rabbitmq-itsys-001
+          items:
+          - key: rabbitmq.conf
+            path: rabbitmq.conf
+          - key: enabled_plugins
+            path: enabled_plugins
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+       - ReadWriteOnce
+      storageClassName: itsystems-dev
+      resources:
+        requests:
+          storage: 500Mi
+  updateStrategy:
+    type: RollingUpdate
