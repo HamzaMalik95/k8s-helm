@@ -42,3 +42,5 @@ live/
 - New environment = new folder under `environments/` with `values/` and `cluster/` subfolders.
 
 See `environments/README.md` for details on the values layout and chart list.
+
+**→ Step-by-step deployment:** [DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md) — how the environment structure works and how to deploy (beginner-friendly).
