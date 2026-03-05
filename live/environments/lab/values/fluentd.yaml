@@ -1,0 +1,3 @@
+# lab overrides for fluentd (clusterName is required by chart)
+
+clusterName: "lab"

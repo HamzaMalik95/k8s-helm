@@ -1,0 +1,3 @@
+# caprod overrides for fluentd (clusterName is required by chart)
+
+clusterName: "caprod"

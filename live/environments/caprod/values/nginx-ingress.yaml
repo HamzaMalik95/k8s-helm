@@ -1,0 +1,5 @@
+# caprod overrides for nginx-ingress
+
+# Example: higher replicas/resources for production
+# controller:
+#   replicaCount: 2

@@ -1,0 +1,4 @@
+# cadev overrides for fluentd (chart: ../../../charts/fluentd)
+# clusterName is required by chart
+
+clusterName: "cadev"

@@ -12,11 +12,13 @@ Just some example files
 
 ## Live
 
-These are real live deployments and such. Run them at the folder level with:
+Real deployments using an **Option C** layout (industry practice): shared Helm charts and per-environment values and cluster manifests.
 
-    $ kubectl apply -f foldername/
+- **`live/charts/`** — Shared Helm charts (single source of truth).
+- **`live/environments/<env>/values/`** — Per-environment Helm value overrides.
+- **`live/environments/<env>/cluster/`** — Raw Kubernetes YAML for that environment (namespaces, PVs, storage, etc.). Apply at the folder level, e.g. `kubectl apply -f live/environments/cadev/cluster/`.
 
-Sometimes need to modify yaml for a specific cluster.  Some folders contain shell scripts that must be run separately
+See `live/README.md` and `live/environments/README.md` for the full structure.
 
 ## Old-archive
 

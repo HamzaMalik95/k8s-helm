@@ -1,0 +1,10 @@
+# cadev overrides for nginx-ingress (chart: ../../../charts/nginx-ingress)
+# Add only what differs from chart values.yaml (e.g. replicas, resources, ingress)
+
+# Example overrides (uncomment and set as needed):
+# controller:
+#   replicaCount: 1
+#   resources:
+#     limits:
+#       cpu: 500m
+#       memory: 512Mi
