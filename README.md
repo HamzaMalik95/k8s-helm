@@ -19,7 +19,8 @@ Real deployments using an layout (industry practice): shared Helm charts and per
 - **`live/environments/<env>/cluster/`** — Raw Kubernetes YAML for that environment (namespaces, PVs, storage, etc.). Apply at the folder level, e.g. `kubectl apply -f live/environments/cadev/cluster/`.
 
 See `live/README.md` and `live/environments/README.md` for the full structure.  
-**How to deploy:** [live/DEPLOYMENT-GUIDE.md](live/DEPLOYMENT-GUIDE.md) (beginner-friendly).
+**How to deploy:** [live/DEPLOYMENT-GUIDE.md](live/DEPLOYMENT-GUIDE.md) (beginner-friendly).  
+**How to test (Helm + kubectl, no login):** [live/TESTING.md](live/TESTING.md).
 
 ## Old-archive
 

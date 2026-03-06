@@ -44,3 +44,5 @@ live/
 See `environments/README.md` for details on the values layout and chart list.
 
 **→ Step-by-step deployment:** [DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md) — how the environment structure works and how to deploy (beginner-friendly).
+
+**→ Testing (Helm + kubectl, no cluster/login):** [TESTING.md](TESTING.md) — dry-run and syntax checks for charts and cluster YAML.
