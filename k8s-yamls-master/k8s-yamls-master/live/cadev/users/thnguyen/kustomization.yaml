@@ -1,7 +1,0 @@
-namespace: thnguyen
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

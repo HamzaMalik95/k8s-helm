@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-host
-  namespace: monitoring
-data:
-  grafanahost: aks-aks-dev-westus2-001

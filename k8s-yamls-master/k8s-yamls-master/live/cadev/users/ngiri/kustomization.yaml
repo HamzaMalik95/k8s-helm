@@ -1,7 +1,0 @@
-namespace: ngiri
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

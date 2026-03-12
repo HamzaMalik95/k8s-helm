@@ -1,7 +1,0 @@
----
-# Service account for accessing Vault secrets
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: 389ds-default
-  namespace: 389ds-dev

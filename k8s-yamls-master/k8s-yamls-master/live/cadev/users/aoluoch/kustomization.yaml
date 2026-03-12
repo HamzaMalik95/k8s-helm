@@ -1,7 +1,0 @@
-namespace: aoluoch
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

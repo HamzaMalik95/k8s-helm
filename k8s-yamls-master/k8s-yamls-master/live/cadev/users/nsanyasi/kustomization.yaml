@@ -1,7 +1,0 @@
-namespace: nsanyasi
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

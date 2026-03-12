@@ -1,7 +1,0 @@
-namespace: cspain
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

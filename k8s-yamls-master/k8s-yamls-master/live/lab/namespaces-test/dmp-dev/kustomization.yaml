@@ -1,7 +1,0 @@
-namespace: dmp-dev
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

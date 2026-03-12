@@ -1,7 +1,0 @@
-namespace: avishnevskiy
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

@@ -1,7 +1,0 @@
----
-# Service account for accessing Vault secrets
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: mfs-default
-  namespace: mfs-e2e

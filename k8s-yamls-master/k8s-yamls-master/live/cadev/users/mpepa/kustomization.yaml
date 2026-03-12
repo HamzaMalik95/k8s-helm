@@ -1,7 +1,0 @@
-namespace: mpepa
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

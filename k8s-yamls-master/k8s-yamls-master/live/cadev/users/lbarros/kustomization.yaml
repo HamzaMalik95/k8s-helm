@@ -1,7 +1,0 @@
-namespace: lbarros
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml

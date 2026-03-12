@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vip-configmap
-  namespace: keepalived-vip
-data:
-#  10.13.158.166: nginx-ingress/nginx-ingress-controller
-  10.13.158.166: default/echoheaders

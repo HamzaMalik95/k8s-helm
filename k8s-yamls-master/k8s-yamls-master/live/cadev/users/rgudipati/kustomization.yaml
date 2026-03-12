@@ -1,7 +1,0 @@
-namespace: rgudipati
-bases:
-- ./../base
-patches:
-- custom.yaml
-resources:
-- namespace.yaml
