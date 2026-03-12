@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cts-qa-ccm-nonprod
+  namespace: cts-qa
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  selector:
+    matchLabels:
+      volname: cts-qa.ccm-nonprod

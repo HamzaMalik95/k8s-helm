@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.pas-prod.ngpa-prod-mirror
+  labels: 
+    volname: pas-prod.ngpa-prod-mirror
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.13.130.93
+    path: "/vol_pv2medvfiler4_pas_prod_ngpa_mirror/qtree_ngpa_prod"

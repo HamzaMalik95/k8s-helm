@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencve-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opencve-webserver
+  template:
+    metadata:
+      labels:
+        app: opencve-webserver
+    spec:
+      containers:
+      - name: webserver
+        # image: docker-local.artifactory.medimpact.com/com.medimpact/itsec/opencve:1.4.1-mi0.0.1
+        image: docker-local.artifactory.medimpact.com/com.medimpact/itsec/opencve:1.4.1
+        imagePullPolicy: Always
+        args: ["webserver", "-b", "0.0.0.0:8000"]
+        envFrom:
+        - configMapRef:
+            name: opencve-env
+        livenessProbe:
+          httpGet:
+            path: /static/img/favicon.ico
+            port: 8000
+            httpHeaders:
+            - name: Host
+              value: opencve-dev.medimpact.com
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /static/img/favicon.ico
+            port: 8000
+            httpHeaders:
+            - name: Host
+              value: opencve-dev.medimpact.com
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "300Mi"
+          requests:
+            cpu: "0"
+            memory: "200Mi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+      securityContext:
+        runAsUser: 10222
+        runAsGroup: 10222
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: config
+        configMap:
+          name: opencve-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: opencve-webserver
+spec:
+  selector:
+    app: opencve-webserver
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000

@@ -1,0 +1,204 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    add_header Access-Control-Allow-Origin *;\n    # Security headers\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Set-Cookie \"Path=/; HttpOnly; Secure\";\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com https://*.googletagmanager.com  https://*.google-analytics.com 'self' 'unsafe-inline' ; connect-src  https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com https://*.googletagmanager.com  https://*.google-analytics.com 'self' ; img-src https://*.medimpact.com https://*.googletagmanager.com  https://*.google-analytics.com 'self'; style-src 'self' https://*.medimpact.com https://*.fontawesome.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com; font-src 'self' https://*.fontawesome.com;\";\n\n\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location / {\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "config.json": "{\n  \"oidc\" : {\n  \"stsServer\": \"https://dev1medimpact.verify.ibm.com/oidc/endpoint/default\",\n  \"redirectUrl\": \"/login\",\n  \"clientId\": \"aa6fc7ce-6772-44f9-9a22-bcb8127e0c38\",\n  \"logoutUrl\": \"https://dev1medimpact.verify.ibm.com/usc/logout\",\n  \"returnUrl\": \"https://lucida-lab.medimpact.com/\",\n  \"renewTimeBeforeTokenExpiresInSeconds\": \"60\"  \n },\n  \"idleTimeOut\": \"3600\",\n  \"logoutBeforeRefreshTokenExpiresInSeconds\": \"120\",\n  \"baseUrl\": \"https://api-dev.medimpact.com\"\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-auth-configmap",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    \n    port_in_redirect off;\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Set-Cookie \"Path=/; HttpOnly; Secure\";\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com 'self' 'unsafe-inline' ; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com; img-src https://*.medimpact.com 'self'; style-src 'self' https://*.medimpact.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location /app-auth {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-auth-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "config.json": "{\n   \"baseUrl\":\"https://api-dev.medimpact.com\"\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-ctp-configmap",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    \n    port_in_redirect off;\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com 'self' 'unsafe-inline' ; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com; img-src https://*.medimpact.com 'self'; style-src 'self' https://*.medimpact.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location /app-ctp {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-ctp-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "config.json": "{\n   \"baseUrl\":\"https://lucida-lab.medimpact.com\",\n   \"apiBaseUrl\": \"https://api-dev.medimpact.com/lucida/dashboard\",\n   \"apiDashboardUrl\": \"https://lucida-lab.medimpact.com/api/lucida-container\",\n   \"apiUserUrl\": \"https://api-dev.medimpact.com/user-ws\",\n   \"apiECSUrl\": \"https://api-dev.medimpact.com/ecs/workflow\",\n   \"apiLocalUrl\": \"https://lucida-lab.medimpact.com/app-dashboard/assets/api\",\n   \"homeUrl\": \"https://lucida-lab.medimpact.com\",\n   \"staticUrl\": \"https://lucida-lab.medimpact.com/app-dashboard/static\",\n   \"logLevel\": \"2\",\n   \"isAlerted\": \"true\",\n   \"appRoles\": {\n     \"medaccess\": [\"FE_MEDACCESS\"],\n     \"medresponse\": [\"FE_BPM_PA\", \"FE_BPM_PA_VIEW_ONLY\"],\n     \"medoptimize\": [\"FE_MEDOPTIMIZE\"],\n     \"cp\": [\"FE_CP\"],\n     \"cpadmin\": [\"FE_CP_ADMIN\"]\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-dashboard-configmap",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    # add_header Content-Security-Policy \"default-src 'none'; script-src 'self'; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com; img-src 'https://*.medimpact.com'; style-src 'self';base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    add_header Content-Security-Policy \"frame-ancestors 'self' *.medimpact.com\";\n\n    # Cache control headers\n    # Cache for 24 hours.  Allow serving stale content if server down.\n    add_header Cache-Control \"max-age=86400\";\n    # No cache\n    # add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    port_in_redirect off;\n    gzip on;\n    gzip_vary on;\n    gzip_min_length 256;\n    gzip_types text/plain text/css text/javascript text/js  text/xml application/json application/javascript\n        application/xml application/xml+rss image/svg+xml font/woff2 font/ttf;\n\n    root /app/dist;\n    index index.html index.htm;\n\n    location /app-dashboard {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-dashboard-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "config.json": "{\n   \"baseUrl\":\"https://api-dev.medimpact.com\"\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-ecs-configmap",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    \n    port_in_redirect off;\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com 'self' 'unsafe-inline' ; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com; img-src https://*.medimpact.com 'self'; style-src 'self' https://*.medimpact.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location /app-ecs {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-ecs-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "config.json": "{\n   \"baseUrl\":\"https://api-dev.medimpact.com\",\n    \"gtagTrackingId\": \"G-FMV4JMNTT5\"   \n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-elig-configmap",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    \n    port_in_redirect off;\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com 'self' 'unsafe-inline' ; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com; img-src https://*.medimpact.com 'self'; style-src 'self' https://*.medimpact.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location /app-elig {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-elig-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "config.json": "{\n   \"baseUrl\":\"https://api-dev.medimpact.com\",\n   \"changePasswordUrl\": \"http://dv1medisim03:9080/itim/self/PasswordChange.do\",\n   \"ecs\": \"on\",\n   \"ctp\": \"on\",\n   \"mcm\": \"on\" ,\n   \"msdrp\": \"on\",\n   \"mdrp\": \"on\",\n   \"midas\": \"on\",\n   \"clnapp\": \"on\" \n}\n",
+        "legacy-app.json": "{\n  \"legacyApp\": [\n  {\n    \"name\": \"MedAccess\",\n    \"url\": \"https://medaccess-dev.medimpact.com/medaccess\",\n    \"role\": \"FE_MEDACCESS\"\n  },\n  {\n    \"name\": \"MedResponse\",\n    \"url\": \"https://int-cp4.medimpact.com/medresponse\",\n    \"role\": \"FE_BPM_PA\"\n  },\n  {\n    \"name\": \"MedOptimize\",\n    \"url\": \"https://modev.medimpact.com\",\n    \"role\": \"FE_MEDOPTIMIZE\"\n  },\n  {\n    \"name\": \"MedResponse Appeals\",\n    \"url\": \"https://int-cp4.medimpact.com/appealsmedresponse\",\n    \"role\": \"FE_APPEALS\"\n  },\n  {\n    \"name\": \"Online Reports (MOR)\",\n    \"url\": \"https://devclient.medimpact.com/mor\",\n    \"role\": \"FE_MOR\"\n  }\n]\n} \n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-layout-configmap",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    \n    port_in_redirect off;\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Set-Cookie \"Path=/; HttpOnly; Secure\";\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com 'self' 'unsafe-inline' ; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com; img-src https://*.medimpact.com 'self'; style-src 'self' https://*.medimpact.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location /app-layout {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-layout-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    \n    port_in_redirect off;\n    # Security headers\n    add_header Access-Control-Allow-Origin *;\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    add_header X-Frame-Options SAMEORIGIN;\n    add_header X-Content-Type-Options nosniff;\n    add_header Content-Security-Policy \"default-src https://*.medimpact.com ; script-src https://*.medimpact.com 'self' 'unsafe-inline' ; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com https://*.verify.ibm.com; img-src https://*.medimpact.com 'self'; style-src 'self' https://*.medimpact.com 'unsafe-inline' ;base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n\n\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location /app-styleguide {\n        alias /app/dist;\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-mfe-styleguide-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "default.conf": "server {\n    listen 8080;\n    add_header Access-Control-Allow-Origin *;\n    # Security headers\n    #add_header Strict-Transport-Security \"max-age=31536000; includeSubdomains; preload\";\n    #add_header X-Frame-Options SAMEORIGIN;\n    #add_header X-Content-Type-Options nosniff;\n    #add_header Content-Security-Policy \"default-src 'none'; script-src 'self'; connect-src 'self' https://*.medimpact.com https://*.ice.ibmcloud.com; img-src 'https://*.medimpact.com'; style-src 'self';base-uri 'self';form-action 'self';frame-ancestors 'self' https://*.medimpact.com;\";\n    \n    # Cache control headers\n    \n    # Cache for 6 hours.  Allow serving stale content if server down.\n    #add_header Cache-Control \"max-age=21600\";\n    \n    # No cache in DEV\n    add_header Cache-Control \"no-cache, no-store, must-revalidate\";\n\n    root /app/dist;\n\n    index index.html index.htm;\n\n    location / {\n        try_files $uri $uri/ /index.html;\n    }\n    location /healthz {\n        access_log off;\n        return 200 \"healthy\\n\";\n    }\n}\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-root-config-container-default.conf",
+        "namespace": "lucida-lab"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "data": {
+        "app.json": "{\n \"app\": {\n   \"ecs\": \"on\",\n   \"ctp\": \"on\",\n   \"clnapp\": \"on\",\n   \"mcm\": \"on\",\n   \"msdrp\": \"on\",\n   \"gaTrackingId\": \"G-FMV4JMNTT5\",\n   \"midas\": \"on\",\n   \"mdrp\": \"on\"\n  }\n }\n",
+        "config.json": "{\n \"imports\": {\n    \"@mfe/root-config\": \"https://lucida-lab.medimpact.com/mfe-root-config.js\",\n    \"@mfe/component-lib\": \"https://lucida-lab.medimpact.com/app-styleguide/mfe-component-lib.js\",\n    \"@mfe/layout\": \"https://lucida-lab.medimpact.com/app-layout/main-es5.js\",\n    \"@mfe/auth\": \"https://lucida-lab.medimpact.com/app-auth/main.js\",\n    \"@mfe/eligibility\": \"https://lucida-lab.medimpact.com/app-elig/main-es2015.js\",\n    \"@mfe/ecs\": \"https://lucida-lab.medimpact.com/app-ecs/main-es2015.js\",\n    \"@mfe/ctp\": \"https://lucida-lab.medimpact.com/app-ctp/main-es2015.js\",\n    \"@mfe/mcm\": \"https://mcm-dev.medimpact.com/mcm-ui/main.js\",\n    \"@mfe/msdrp\": \"https://msdrp-dev.medimpact.com/app-msdrp/main.js\",\n    \"@mfe/clnapp\": \"https://clnapp-dev.medimpact.com/app-clnapp/main.js\",\n    \"@mfe/midas\": \"https://midas-dev.medimpact.com/app-midas/main.js\",\n    \"@mfe/medinvoice\": \"https://mdrp-dev.medimpact.com/medinvoice/main-es2015.js\"\n  }\n }\n"
+      },
+      "kind": "ConfigMap",
+      "metadata": {
+        "annotations": {},
+        "name": "lucida-root-configmap",
+        "namespace": "lucida-lab"
+      }
+    }
+  ],
+  "kind": "List",
+  "metadata": {
+    "resourceVersion": "",
+    "selfLink": ""
+  }
+}

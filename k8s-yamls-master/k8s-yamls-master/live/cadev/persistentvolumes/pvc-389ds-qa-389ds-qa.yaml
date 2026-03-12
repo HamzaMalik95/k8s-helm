@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 389ds-qa
+  namespace: 389ds-qa
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 120Gi
+  selector:
+    matchLabels:
+      volname: 389ds-qa.389ds-qa

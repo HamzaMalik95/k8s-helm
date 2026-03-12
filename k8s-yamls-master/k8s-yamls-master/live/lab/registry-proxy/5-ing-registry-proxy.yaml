@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+  name: docker-local-cache
+  namespace: itsystems-lab
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: docker-local-cache-wtd.medimpact.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-local-cache
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - docker-local-cache-wtd.medimpact.com

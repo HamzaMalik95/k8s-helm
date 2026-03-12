@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana-image-renderer
+  name: grafana-image-renderer
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  ports:
+  - name: grafana-image-renderer
+    port: 8081
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: grafana-image-renderer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana-image-renderer
+  name: grafana-image-renderer
+  namespace: monitoring
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: grafana-image-renderer
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: grafana-image-renderer
+    spec:
+      containers:
+      - image: docker-local.artifactory.medimpact.com/systems/grafana/grafana-image-renderer:2.0.1
+        imagePullPolicy: IfNotPresent
+        name: grafana-image-renderer
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "1000Mi"
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+      securityContext:
+        runAsUser: 8081

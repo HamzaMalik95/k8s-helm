@@ -1,0 +1,43 @@
+---
+# Create dashboard users cluster role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: medimpact:dashboard-users
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+---
+# Create dashboard users ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: oidc:kube_dashboard-users
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:dashboard-users
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_dashboard-users
+---
+# Create dashboard users RoleBinding in default namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_dashboard-users
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_dashboard-users

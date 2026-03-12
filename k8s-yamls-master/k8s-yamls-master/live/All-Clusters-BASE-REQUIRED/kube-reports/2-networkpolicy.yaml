@@ -1,0 +1,20 @@
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: nginx-ingress.kube-reports.8080
+spec:
+  podSelector:
+    matchLabels:
+      app: kube-reports
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            namespace: ingress-nginx 
+        podSelector:
+          matchLabels:
+            app.kubernetes.io/name: ingress-nginx
+      ports:
+      - port: 8080
+        protocol: TCP

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: victoriametrics
+  labels:
+    istio-injection: disabled
+    namespace: victoriametrics
+# ---
+# # Default deny network policy
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: default-deny
+  # namespace: thanos
+# spec:
+  # podSelector: {}
+# ---
+# # Allow all traffic within the namespace
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: allow-all-within-namespace
+  # namespace: thanos
+# spec:
+  # podSelector:
+    # matchLabels:
+  # ingress:
+  # - from:
+    # - podSelector: {}

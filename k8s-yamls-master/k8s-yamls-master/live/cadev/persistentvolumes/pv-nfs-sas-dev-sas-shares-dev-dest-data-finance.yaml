@@ -1,0 +1,25 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.sas-dev.sas-shares-dev-dest-data-finance
+  # annotations:
+    # volume.beta.kubernetes.io/mount-options: rsize=8192,wsize=8192,timeo=14,intr,vers=3
+  labels: 
+    volname: sas-dev.sas-shares-dev-dest-data-finance
+spec:
+  capacity:
+    storage: 2000Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  # storageClassName: nfs
+  nfs:
+    server: 10.13.155.246
+    path: "/vol_pv2medvfiler3_sas_shares_dev_dest/qtree_data_finance"

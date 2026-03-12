@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: medresponse-prod
+  labels:
+    namespace: medresponse-prod
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pss-enforce: "true"
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: medresponse-prod
+spec:
+  hard:
+    limits.cpu: 20000m
+    limits.memory: 8G
+    requests.cpu: 2000m
+    requests.memory: 7G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: medresponse-prod
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+    defaultRequest:
+      cpu: 50m
+      memory: 100M
+    type: Container
+---
+#default deny network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: medresponse-prod
+spec:
+  podSelector: {}
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_prod_medresponse-prod
+  namespace: medresponse-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_prod_medresponse-prod
+---
+#bind power-users AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_cluster-power-users
+  namespace: medresponse-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_cluster-power-users

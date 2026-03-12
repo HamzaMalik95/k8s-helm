@@ -1,0 +1,818 @@
+# Default values for gravitee.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+apim:
+  managedServiceAccount: false
+
+chaos:
+  enabled: false
+
+inMemoryAuth:
+  enabled: true
+  allowEmailInSearchResults: false
+
+# Default password "admin", use bcrypt ($2a$ version) to generate a new one
+adminPasswordBcrypt: $2a$10$Ihk05VSds5rUSgMdsMVi9OKMIx2yUvMz7y9VP3rJmQeizZLrhLMyq
+adminEmail: itmiddlewareadmins@medimpact.com
+adminFirstName:
+adminLastName:
+
+jwtSecret: myJWT4Gr4v1t33_S3cr3t
+
+# Define extra inMemory users here or disable the default ones here
+extraInMemoryUsers: |
+  - user:
+    username: user
+    # Password value: password
+    password: $2a$10$9kjw/SH9gucCId3Lnt6EmuFreUAcXSZgpvAYuW2ISv7hSOhHRH1AO
+    roles: MANAGEMENT:USER, PORTAL:USER
+    # Useful to receive notifications
+    #email:
+    #firstName:
+    #lastName:
+  - user:
+    username: api1
+    # Password value: api1
+    password: $2a$10$iXdXO4wAYdhx2LOwijsp7.PsoAZQ05zEdHxbriIYCbtyo.y32LTji
+    # You can declare multiple roles using comma separator
+    roles: MANAGEMENT:API_PUBLISHER, PORTAL:API_PUBLISHER
+    #email:
+    #firstName:
+    #lastName:
+  - user:
+    username: application1
+    # Password value: application1
+    password: $2a$10$2gtKPYRB9zaVaPcn5RBx/.3T.7SeZoDGs9GKqbo9G64fKyXFR1He.
+    roles: MANAGEMENT:USER, PORTAL:USER
+    #email:
+    #firstName:
+    #lastName:
+#   - user:
+#     username: publisher-user
+#     password: $2a$13$iXdXO4wAYdhx2LOwijsp7.PsoAZQ12zEdHxbriIYCbtyo.y32LTji
+#     roles: MANAGEMENT:API_PUBLISHER, PORTAL:API_PUBLISHER
+#     email:
+#     firstName:
+#     lastName:
+#   - user:
+#     username: application-test
+#     password: $2a$10$2gtKPYRB9zaVaPcn5RBx/.3T.7SeZoDGs9GKqbo9G64fKyXFR1He.
+#     email:
+#     firstName:
+#     lastName:
+
+ldap:
+  enabled: true
+  context:
+    # User to bind the LDAP
+    user: svcGraviteeDev@medimpact.com
+    # Password to bind the LDAP
+    password: "shapooN0uf=eix&"
+    # URL to LDAP
+    url: ldap://ad.medimpact.com
+    # Bind base to be used in authentication and lookup sections
+    base: dc=medimpact,dc=com
+  authentication:
+    user:
+      # Base to search users, must be relative to the context.base
+      base: "ou=Users OU"
+      # Use sAMAccountName if you are in AD
+      # Use uid if you are in a native LDAP
+      # The {0} will be replaced by user typed to authenticate
+      filter: sAMAccountName={0}
+      # If you have an attribute with the user photo, you can set it here
+      # photo: "thumbnailPhoto"
+    group:
+      # Base to search groups, must be relative to the context.base
+      # There an issue here, until fixed only oneleve search is supported
+      base: ou=Secure Groups,ou=Groups OU
+      # The {0} will be replaced by DN of the user
+      filter: member={0}
+      role:
+        # The attribute that define your group names on your AD/LDAP
+        # You can use sAMAccountName if you're in AD or cn if you're in native LDAP
+        attribute: sAMAccountName
+        consumer: "Gravitee Nonprod Consumer"
+        publisher: "Gravitee Nonprod Publisher"
+        admin: "Gravitee Nonprod Admin"
+        user: "Gravitee Nonprod User"
+  lookup:
+    allowEmailInSearchResults: false
+    # Note that personal information can be exposed without user consentment
+    user:
+      # Base to lookup user, must be relative to context.base
+      base: "ou=Users OU"
+      # The filter can be any type of complex LDAP query
+      filter: (&(objectClass=person)(|(cn=*{0}*)(sAMAccountName={0})))
+
+smtp:
+  enabled: true
+  host: mx.medimpact.com
+  port: 25
+  from: gravitee-apim@medimpact.com
+  username: info@example.com
+  password: example.com
+  subject: "[gravitee] %s"
+  properties:
+    auth: false
+    starttlsEnable: false
+    #localhost: gio-lab.medimpact.com
+
+notifiers:
+  smtp:
+    enabled: true
+    host: ${email.host}
+    subject: ${email.subject}
+    port: ${email.port}
+    from: ${email.from}
+    username: ${email.username}
+    password: ${email.password}
+    # starttlsEnabled: false
+    # ssl:
+    #   trustAll: false
+    #   keyStore:
+    #   keyStorePassword:
+
+mongo:
+  uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+  # servers: |
+  #   - host: mongo1
+  #     port: 27017
+  #   - host: mongo2
+  #     port: 27017
+  # sslEnabled: false
+  # socketKeepAlive: false
+  # rs: rs0
+  # rsEnabled: true
+  # dbhost: graviteeio-apim-mongodb-replicaset
+  # dbname: gravitee
+  # dbport: 27017
+  # connectTimeoutMS: 30000
+  # auth:
+    # enabled: false
+    # source: admin
+    # username:
+    # password:
+
+mongodb-replicaset:
+  enabled: false
+  replicas: 3
+  replicaSetName: rs0
+  auth:
+    enabled: false
+    adminUser: username
+    adminPassword: password
+    metricsUser: metrics
+    metricsPassword: password
+    key: keycontent
+    # existingKeySecret:
+    # existingAdminSecret:
+    # existingMetricsSecret:
+  image:
+    repository: mongo
+    tag: 3.6
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  persistentVolume:
+    enabled: true
+    # storageClass: "-"
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+  configmap: {}
+
+es:
+  enabled: true
+  cluster: elasticsearch
+  index: gravitee
+  # If the details for security are entered
+  # authentication will be provided for the
+  # elastic search cluster
+  # https://docs.gravitee.io/apim_installguide_repositories_elasticsearch.html#management_api_configuration
+  security:
+    enabled: false
+    username: example
+    password: example
+  ssl:
+    enabled: false
+    # keystore:
+    #   type: jks
+    #   path: path/to/jks
+    #   password: example
+    #   certs:
+    #     - /path/to/cert1
+    #     - /path/to/cert2
+    #   keys:
+    #     - /path/to/key
+    #     - /path/to/key2
+  endpoints:
+    - http://dv1medgravpoc1.medimpact.com:9200
+
+elasticsearch:
+  enabled: false
+  cluster:
+    name: "elasticsearch"
+    env:
+      MINIMUM_MASTER_NODES: "2"
+    plugins: []
+
+  image:
+    repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+    tag: "6.7.0"
+  client:
+    name: client
+    replicas: 2
+    heapSize: "512m"
+    # additionalJavaOpts: "-XX:MaxRAM=512m"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "1024Mi"
+      requests:
+        cpu: "25m"
+        memory: "512Mi"
+  master:
+    name: master
+    replicas: 3
+    heapSize: "512m"
+    # additionalJavaOpts: "-XX:MaxRAM=512m"
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      name: data
+      size: "4Gi"
+      # storageClass: "ssd"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "1024Mi"
+      requests:
+        cpu: "25m"
+        memory: "512Mi"
+
+  data:
+    name: data
+    exposeHttp: false
+    replicas: 2
+    heapSize: "512m"
+    # additionalJavaOpts: "-XX:MaxRAM=512m"
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      name: data
+      size: "30Gi"
+      # storageClass: "ssd"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "2048Mi"
+      requests:
+        cpu: "25m"
+        memory: "1536Mi"
+
+alerts:
+  enabled: false
+  endpoints:
+    - http://localhost:8072/
+  security:
+    enabled: false
+    username: admin
+    password: adminadmin
+
+api:
+  enabled: true
+  name: api
+  env:
+  - name: gravitee_jwt_cookie-domain
+    value: "gio-lab.medimpact.com"
+  - name: JAVA_OPTS
+    value: -Djavax.net.ssl.trustStore=/opt/graviteeio-management-api/certs/cacerts -Djavax.net.ssl.trustStorePassword=changeit
+  logging:
+    debug: false
+    stdout:
+      encoderPattern: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file:
+      enabled: true
+      rollingPolicy: |
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${gravitee.management.log.dir}/gravitee_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+      encoderPattern: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%n"
+    graviteeLevel: DEBUG
+    jettyLevel: INFO
+  restartPolicy: OnFailure
+  reloadOnConfigChange: true
+  livenessProbe:
+    tcpSocket:  
+      port: http
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    failureThreshold: 3
+  readinessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    failureThreshold: 3
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicaCount: 3
+  image:
+    repository: docker-local.artifactory.medimpact.com/graviteeio/apim-management-api
+    tag: 3.20.10-mi1.0.34
+    pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - name: gravitee_secrets
+  # env:
+  #   - name: ENV_VARIABLE
+  #     value: "some value"
+  ssl:
+    enabled: false
+  #  keystore:
+  #    type: jks # Supports jks, pkcs12
+  #    path: ${gravitee.home}/security/keystore.jks
+  #    password: secret
+  #  truststore:
+  #    type: jks # Supports jks, pkcs12
+  #    path: ${gravitee.home}/security/truststore.jks
+  #    password: secret
+  http:
+    services:
+      core:
+        http:
+          port: 18083
+          host: localhost
+          authentication:
+            password: adminadmin  
+        ingress:
+          enabled: false
+#          path: /management/_(.*)
+#          hosts:
+#            - gio-lab.medimpact.com
+#          annotations:
+#            kubernetes.io/ingress.class: nginx
+#            nginx.ingress.kubernetes.io/rewrite-target: /_$1
+        service: 
+#       If you choose to enable this service, you'll need to expose the technical api
+#       on an accessible host outside of the pod: api.http.services.core.http.host
+          enabled: false
+#         type: ClusterIP
+#         externalPort: 18083
+    api:
+      entrypoint: /
+    client:
+      timeout: 10000
+      proxy:
+        type: HTTP
+        http:
+          host: localhost
+          port: 3128
+          username:
+          password:
+        https:
+          host: localhost
+          port: 3128
+          username:
+          password:
+  user:
+    login:
+      defaultApplication: false
+    anynomizeOnDelete: false
+  supportEnabled: true
+  ratingEnabled: true
+  service:
+    type: ClusterIP
+    externalPort: 83
+    internalPort: 8083
+    internalPortName: http
+  # annotations:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  ingress:
+    management:
+      enabled: true
+      path: /management
+      ingressClassName: ""
+      # Used to create an Ingress record.
+      hosts:
+        - gio-lab.medimpact.com
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_pass_header if-match;\n"
+        # kubernetes.io/tls-acme: "true"
+      #tls:
+        # Secrets must be manually created in the namespace.
+        # - secretName: chart-example-tls
+        #   hosts:
+        #     - chart-example.local
+      tls:
+        - hosts:
+            - gio-lab.medimpact.com
+          # secretName: api-custom-cert
+    portal:
+      enabled: true
+      path: /portal
+      ingressClassName: ""
+      # Used to create an Ingress record.
+      hosts:
+        - gio-lab.medimpact.com
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_set_header if-match \"\";\n"
+        # kubernetes.io/tls-acme: "true"
+      #tls:
+        # Secrets must be manually created in the namespace.
+        # - secretName: chart-example-tls
+        #   hosts:
+        #     - chart-example.local
+      tls:
+        - hosts:
+            - gio-lab.medimpact.com
+          # secretName: api-custom-cert
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 150m
+      memory: 512Mi
+  lifecycle:
+    preStop: '["/bin/sh","-c","sleep 10"]'
+    #    postStart: '[ "/bin/sh", "-c", "echo Post starting Gravitee Management API" ]'
+    #    preStop: '[ "/bin/sh", "-c", "echo Pre stopping Gravitee Management API" ]'
+    ## Additional gravitee API volume mounts
+    # Defines additional volume mounts.
+    # extraVolumeMounts: |
+    # - name: extra-volume
+    #   mountPath: /mnt/volume
+    #   readOnly: true
+    #   existingClaim: volume-claim
+
+gateway:
+  enabled: true
+  type: Deployment
+  name: gateway
+  env:
+  - name: gravitee_reporters_file_enabled
+    value: "false"
+  - name: JAVA_OPTS
+    value: "-Djavax.net.ssl.trustStore=/opt/graviteeio-gateway/certs/cacerts -Djavax.net.ssl.trustStorePassword=changeit"
+  - name: GIO_MIN_MEM
+    value: "2048m"
+  - name: GIO_MAX_MEM
+    value: "2048m"
+  logging:
+    debug: false
+    stdout:
+      encoderPattern: "%d{HH:mm:ss.SSS} [%thread] [%X{api}] %-5level %logger{36} - %msg%n"
+    file:
+      enabled: false
+      rollingPolicy: |
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${gravitee.home}/logs/gravitee_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+      encoderPattern: "%d{HH:mm:ss.SSS} [%thread] [%X{api}] %-5level %logger{36} - %msg%n"
+    graviteeLevel: DEBUG
+    jettyLevel: WARN
+  reloadOnConfigChange: true
+  livenessProbe:
+    tcpSocket:  
+      port: http
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    failureThreshold: 3
+  readinessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 40
+    periodSeconds: 10
+    failureThreshold: 3
+  ssl:
+    enabled: false
+  #  keystore:
+  #    type: jks # Supports jks, pem, pkcs12
+  #    path: ${gravitee.home}/security/keystore.jks
+  #    password: secret
+    clientAuth: false # Supports false/none, request, true/requires
+  #  truststore:
+  #    type: jks # Supports jks, pem, pkcs12
+  #    path: ${gravitee.home}/security/truststore.jks
+  #    password: secret
+  replicaCount: 3
+  # sharding_tags:
+  # tenant:
+  websocket: false
+  apiKey:
+    header: X-Api-Key
+    param: api-key
+  image:
+    repository: docker-local.artifactory.medimpact.com/graviteeio/apim-gateway
+    tag: 3.20.10-mi1.0.34
+    pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - name: gravitee_secrets
+  # env:
+  #   - name: ENV_VARIABLE
+  #     value: "some value"
+  service:
+    type: ClusterIP
+    externalPort: 82
+    internalPort: 8082
+    internalPortName: http
+  # annotations:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  ingress:
+    enabled: false
+    path: /
+    # Used to create an Ingress record.
+    hosts:
+      - api-lab.medimpact.com
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
+      kubernetes.io/app-root: /
+      kubernetes.io/rewrite-target: /
+    tls:
+      - hosts:
+          - api-lab.medimpact.com
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: 2000m
+      memory: 3Gi
+    requests:
+      cpu: 100m
+      memory: 2Gi
+  lifecycle:
+    preStop: '["/bin/sh","-c","sleep 10"]'
+    #    postStart: '[ "/bin/sh", "-c", "echo Post starting Gravitee Gateway" ]'
+    #    preStop: '[ "/bin/sh", "-c", "echo Pre stopping Gravitee Gateway" ]'
+    ## Additional gravitee gateway volume mounts
+    # Defines additional volume mounts.
+    # extraVolumeMounts: |
+    # - name: extra-volume
+    #   mountPath: /mnt/volume
+    #   readOnly: true
+    #   existingClaim: volume-claim
+    
+portal:
+  enabled: true
+  name: portal
+  replicaCount: 3
+  image:
+    repository: docker-local.artifactory.medimpact.com/graviteeio/apim-portal-ui
+    tag: 3.20.10
+    pullPolicy: IfNotPresent
+    # pullSecrets: gravitee_secrets
+
+  deployment:
+    # Annotations to apply to the deployment
+    annotations: {}
+    # additionals labels
+    labels: {}
+    affinity: {}
+    hostAliases: []
+    #- ip: "127.0.0.1"
+    #  hostnames:
+    #  - "foo.local"
+    #  - "bar.local"
+    nodeSelector: {}
+    tolerations: []
+    envFrom: []
+    # - configMapRef:
+    #     name: config-secret
+    securityContext:
+      runAsUser: 101
+      runAsGroup: 101
+      runAsNonRoot: true
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+    topologySpreadConstraints: []
+    # revisionHistoryLimit: 10
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    failureThreshold: 3
+
+  pdb:
+    enabled: false
+    minAvailable: ""
+    maxUnavailable: "50%"
+       
+  podAnnotations: {}
+    # iam.amazonaws.com/role: es-cluster
+
+  # How long to wait for APIM Portal pods to stop gracefully
+  terminationGracePeriod: 30
+
+  # This is the PriorityClass settings as defined in
+  # https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+  priorityClassName: ""
+
+  env: []
+  #   - name: ENV_VARIABLE
+  #     value: ENV_VARIABLE_VALUE
+  #   - name: ENV_VARIABLE_WITH_FROM
+  #     valueFrom:
+  #       configMapKeyRef:
+  #         name: special-config
+  #         key: SPECIAL_LEVEL
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  service:
+    name: nginx
+    type: ClusterIP
+    externalPort: 8003
+    internalPort: 8080
+    internalPortName: http
+#    appProtocol: http
+  # annotations:
+  # DEPRECATED, please define portal.deployment.securityContext instead
+  securityContext:
+    runAsUser: 101
+    runAsGroup: 101
+    runAsNonRoot: true
+  # # ingress:
+    # # enabled: true
+    # # path: /
+    # # ingressClassName: ""
+    # # hosts:
+      # # - gio.medimpact.com
+    # # annotations:
+      # # kubernetes.io/ingress.class: nginx
+      # # nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\n"
+    # # tls:
+      # # - hosts:
+          # # - gio.medimpact.com
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - "gio-lab.medimpact.com"
+    path: /
+    tls:
+      - hosts:
+        - "gio-lab.medimpact.com"
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: 1000m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    #  lifecycle:
+    #    postStart: '[ "/bin/sh", "-c", "echo Post starting Gravitee Portal" ]'
+    #    preStop: '[ "/bin/sh", "-c", "echo Pre stopping Gravitee Portal" ]'
+    ## Additional gravitee ui volume mounts
+    # Defines additional volume mounts.
+    # extraVolumeMounts: |
+    # - name: extra-volume
+    #   mountPath: /mnt/volume
+    #   readOnly: true
+
+ui:
+  enabled: true
+  name: ui
+  title: API Portal
+  managementTitle: API Management
+  documentationLink: http://docs.gravitee.io/
+  scheduler:
+    tasks: 10
+  theme:
+    name: "default"
+    logo: "themes/assets/GRAVITEE_LOGO1-01.png"
+    loader: "assets/gravitee_logo_anim.gif"
+  portal:
+    apikeyHeader: "X-Api-Key"
+    devMode:
+      enabled: false
+    userCreation:
+      enabled: true
+    support:
+      enabled: true
+    rating:
+      enabled: false
+    analytics:
+      enabled: false
+      trackingId: ""
+  replicaCount: 3
+  image:
+    repository: docker-local.artifactory.medimpact.com/graviteeio/apim-management-ui
+    tag: 3.20.10
+    pullPolicy: IfNotPresent
+  # pullSecrets:
+  #   - name: gravitee_secrets
+  # env:
+  #   - name: ENV_VARIABLE
+  #     value: "some value"
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  service:
+    name: nginx
+    type: ClusterIP
+    externalPort: 8002
+    internalPort: 8080
+    internalPortName: http
+  # annotations:
+  # # ingress:
+    # # enabled: true
+    # # path: /
+    # # hosts:
+      # # - gio-lab.medimpact.com
+    # # annotations:
+      # # kubernetes.io/ingress.class: nginx
+      # # kubernetes.io/app-root: /management
+      # # kubernetes.io/rewrite-target: /management
+      # # nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\n"
+    # # tls:
+      # # - hosts:
+          # # - gio-lab.medimpact.com
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /$1$2
+      nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nsub_filter_once on;\nsub_filter  '<base href=\"/' '<base href=\"/console/';"
+    hosts:
+    - "gio-lab.medimpact.com"
+    # path: /
+    path: /console(/|$)(.*)
+    tls:
+      - hosts:
+        - "gio-lab.medimpact.com"
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: 1000m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    #  lifecycle:
+    #    postStart: '[ "/bin/sh", "-c", "echo Post starting Gravitee UI" ]'
+    #    preStop: '[ "/bin/sh", "-c", "echo Pre stopping Gravitee UI" ]'
+    ## Additional gravitee ui volume mounts
+    # Defines additional volume mounts.
+    # extraVolumeMounts: |
+    # - name: extra-volume
+    #   mountPath: /mnt/volume
+    #   readOnly: true
+

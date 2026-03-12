@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanagerconfig
+  namespace: monitoring
+  labels:
+    alertmanagerConfig: enabled
+spec:
+  route:
+    groupBy: ['alertname', 'namespace']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 6h
+    receiver: 'default-email'
+    routes:
+    - match:
+        severity: "warning|info"
+        # namespace: "itsystems-lab"
+      receiver: "mon-itsystems-nonprod-email"
+  receivers:
+  - name: 'default-email'
+    emailConfigs:
+    - to: 'mark.deckert@medimpact.com'
+      sendResolved: true
+      from: 'k8s-alertmanager@medimpact.com'
+      smarthost: 'mx.medimpact.com:25'
+      requireTLS: false
+  - name: 'mon-itsystems-nonprod-email'
+    emailConfigs:
+    - to: 'mark.deckert@medimpact.com'
+      sendResolved: true

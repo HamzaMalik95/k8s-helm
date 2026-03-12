@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.devops-prod.jenkins-controller-prod
+  labels: 
+    volname:  devops-prod.jenkins-controller-prod
+spec:
+  capacity:
+    storage: 199Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.13.130.93
+    path: "/vol_pv1medvfiler4_devops_prod_jenkins_controller_prod/qtree_jenkins_controller_prod"

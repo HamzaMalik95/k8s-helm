@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-medresponse-qa-pv1medvfiler3-pafa-qa
+  # annotations:
+    # volume.beta.kubernetes.io/mount-options: rsize=8192,wsize=8192,timeo=14,intr,vers=3
+  labels: 
+    volname: medresponse-qa-pv1medvfiler3-pafa-qa
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    server: 10.13.155.246
+    path: "/pv1medfviler3_vol_pafa_qa/qtree_pafa_qa"

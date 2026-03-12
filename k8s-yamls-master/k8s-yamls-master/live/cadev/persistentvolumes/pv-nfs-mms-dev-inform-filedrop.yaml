@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.mms-dev.inform-dev-filedrop
+  labels: 
+    volname: mms-dev.inform-dev-filedrop
+spec:
+  capacity:
+    storage: 63G
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.13.130.93
+    path: "/vol_pv1medvfiler4_inform_dev_app/qtree_inform_dev_filedrop"

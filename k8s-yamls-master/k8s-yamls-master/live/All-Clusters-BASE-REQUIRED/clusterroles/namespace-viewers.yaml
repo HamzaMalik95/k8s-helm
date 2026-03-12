@@ -1,0 +1,79 @@
+# Create namespace viewers cluster role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: medimpact:namespace-viewers
+rules:
+- apiGroups:
+  - 'autoscaling'
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - '*'
+  resources:
+  - configmaps
+  - cronjobs
+  - deployments
+  - deployments/rollback
+  - deployments/scale
+  - endpoints
+  - events
+  - jobs
+  - ingresses
+  - horizontalpodautoscalers
+  - limitranges
+  - namespaces
+  - networkpolicies
+  - persistentvolumeclaims
+  - poddisruptionbudgets
+  - pods
+  - pods/exec
+  - pods/attach
+  - pods/log
+  - pods/portforward
+  - pods/status
+  - replicasets
+  - replicasets/scale
+  - replicationcontrollers
+  - services
+  - secrets
+  - statefulsets
+  - statefulsets/scale
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - 'networking.istio.io'
+  resources:
+  - destinationrules
+  - gateways
+  - serviceentries
+  - virtualservices
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - 'authentication.istio.io'
+  resources:
+  - policies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - '*'
+  resources:
+  - daemonsets
+  - nodes
+  - resourcequotas
+  - resourcequotas/status
+  verbs:
+  - get
+  - list
+  - watch

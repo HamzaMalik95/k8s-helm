@@ -1,0 +1,643 @@
+---
+# Source: am/templates/api/api-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grav-am-management-api
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+data:
+  gravitee.yml: |
+
+    management:
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee-am?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+
+    oauth2:
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee-am?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+
+    services:
+      core:
+        http: 
+          enabled: true
+          port: 18093
+          host: localhost
+          authentication:
+            type: basic
+            users:
+              admin: adminadmin
+
+    # SMTP configuration used to send mails
+    email:
+      enabled: true 
+      host: mx.medimpact.com
+      subject: "[gravitee] %s"
+      port: 25
+      from: grav-am@medimpact.com
+      username: info@example.com
+      password: example.com
+      properties:
+        auth: false
+        starttls.enable: false
+
+    domains:
+      certificates:
+        default:
+          keysize: 2048
+          alias: default
+          keypass: gravitee
+          storepass: gravitee
+          validity: 365
+          algorithm: SHA256withRSA
+          name: cn=Gravitee.io
+
+    jwt:
+      secret: s3cR3t4grAv1t3310AMS1g1ingDftK3y
+      #kid: default-gravitee-AM-key
+      #expire-after: 604800
+      #issuer: https://gravitee.am
+      #cookie-path: /
+      #cookie-domain: .gravitee.io cookie domain (default "")
+      #cookie-secure: true
+
+    # User management configuration
+    user:
+      # Password complexity validation policy
+      # Applications should enforce password complexity rules to discourage easy to guess passwords.
+      # Passwords should require a minimum level of complexity that makes sense for the application and its user population.
+      #password:
+      #  policy:
+      #    pattern: ^(?=\s*\S).*$ # Regex pattern for password validation (default to ^(?=\s*\S).*$ (non empty string))
+                                  # Example : ^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
+                                  # ^                # start-of-string
+                                  #(?=.*[0-9])       # a digit must occur at least once
+                                  #(?=.*[a-z])       # a lower case letter must occur at least once
+                                  #(?=.*[A-Z])       # an upper case letter must occur at least once
+                                  #(?=.*[@#$%^&+=])  # a special character must occur at least once
+                                  #(?=\S+$)          # no whitespace allowed in the entire string
+                                  #.{8,}             # anything, at least eight places though
+                                  #$                 # end-of-string
+      registration:
+        email:
+          #subject: New user registration
+        token:
+        #expire-after: 86400 # the end of validity of the token in seconds for registration email (default 86400 = a day)
+      resetPassword:
+        email:
+          #subject: Please reset your password
+        token:
+        #expire-after: 86400 # the end of validity of the token in seconds for reset password email (default 86400 = a day)
+
+    # Gateway entry point used in emails
+    gateway:
+      url: https://grav-dev-am-gw.medimpact.com
+---
+# Source: am/templates/gateway/gateway-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grav-am-gateway
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+data:
+  gravitee.yml: |
+    # Gateway HTTP server
+    http:
+      port: 8092
+      host: 0.0.0.0
+    #  idleTimeout: 0
+    #  tcpKeepAlive: true
+    #  compressionSupported: false
+    #  instances: 0
+      alpn: true
+
+    management:
+      type: mongodb
+      mongodb:
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee-am?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+        
+
+    oauth2:
+      type: mongodb
+      mongodb:
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee-am?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+        
+
+    services:
+      core:
+        http:
+          port: 18092
+          host: localhost
+          authentication:
+            # authentication type to be used for the core services
+            # - none : to disable authentication
+            # - basic : to use basic authentication
+            # default is "basic"
+            type: basic
+            users:
+              admin: adminadmin
+
+    jwt:
+      secret: s3cR3t4grAv1t3310AMS1g1ingDftK3y
+      #kid: default-gravitee-AM-key
+      #expire-after: 604800
+      #issuer: https://gravitee.am
+      #cookie-path: /
+      #cookie-domain: .gravitee.io cookie domain (default "")
+      #cookie-secure: true
+
+    # SMTP configuration used to send mails
+    email:
+      enabled: true 
+      host: mx.medimpact.com
+      subject: "[gravitee] %s"
+      port: 25
+      from: grav-am@medimpact.com
+      username: info@example.com
+      password: example.com
+      properties:
+        auth: false
+        starttls.enable: false
+
+    # User management configuration
+    user:
+      # Password complexity validation policy
+      # Applications should enforce password complexity rules to discourage easy to guess passwords.
+      # Passwords should require a minimum level of complexity that makes sense for the application and its user population.
+      #password:
+      #  policy:
+      #    pattern: ^(?=\s*\S).*$ # Regex pattern for password validation (default to ^(?=\s*\S).*$ (non empty string))
+                                  # Example : ^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
+                                  # ^                # start-of-string
+                                  #(?=.*[0-9])       # a digit must occur at least once
+                                  #(?=.*[a-z])       # a lower case letter must occur at least once
+                                  #(?=.*[A-Z])       # an upper case letter must occur at least once
+                                  #(?=.*[@#$%^&+=])  # a special character must occur at least once
+                                  #(?=\S+$)          # no whitespace allowed in the entire string
+                                  #.{8,}             # anything, at least eight places though
+                                  #$                 # end-of-string
+      registration:
+        email:
+          #subject: New user registration
+        token:
+          #expire-after: 86400 # the end of validity of the token in seconds for registration email (default 86400 = a day)
+      resetPassword:
+        email:
+          #subject: Please reset your password
+        token:
+          #expire-after: 86400 # the end of validity of the token in seconds for reset password email (default 86400 = a day)
+
+    handlers:
+      request:
+        transaction:
+          header: X-Gravitee-Transaction-Id
+---
+# Source: am/templates/ui/ui-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grav-am-management-ui
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+data:
+  use-gzip: "true"
+  gzip-level: "5"
+  gzip-types: "*"
+---
+# Source: am/templates/api/api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: grav-am-management-api
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 83
+      targetPort: 8093
+      protocol: TCP
+      name: management-api
+  selector:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/component: "management-api"
+---
+# Source: am/templates/gateway/gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: grav-am-gateway
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 82
+      targetPort: 8092
+      protocol: TCP
+      name: gateway
+  selector:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/component: "gateway"
+---
+# Source: am/templates/ui/ui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: grav-am-management-ui
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 8002
+      targetPort: 8080
+      protocol: TCP
+      name: management-ui
+  selector:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/component: "management-ui"
+---
+# Source: am/templates/api/api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grav-am-management-api
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: am
+      app.kubernetes.io/instance: grav-am
+      app.kubernetes.io/component: "management-api"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 814dc27962bd6b3d3bb050b8a1e5487b6272ec4cc91e70ef1f68e0c461e67b41
+      labels:
+        app.kubernetes.io/name: am
+        app.kubernetes.io/instance: grav-am
+        app.kubernetes.io/component: "management-api"
+    spec:
+      containers:
+        - name: grav-am-management-api
+          image: "graviteeio/am-management-api:3.2.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8093
+          livenessProbe:
+            tcpSocket:
+              port: 8093
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 8093
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          securityContext:
+            runAsUser: 1001
+          volumeMounts:
+            - name: config
+              mountPath: /opt/graviteeio-am-management-api/config/gravitee.yml
+              subPath: gravitee.yml
+      volumes:
+        - name: config
+          configMap:
+            name: grav-am-management-api
+---
+# Source: am/templates/gateway/gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grav-am-gateway
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: am
+      app.kubernetes.io/instance: grav-am
+      app.kubernetes.io/component: "gateway"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 184ec073120d98d04971e33678ecf80fc524e9d31c33dde977a4f812f63ee8df
+      labels:
+        app.kubernetes.io/name: am
+        app.kubernetes.io/instance: grav-am
+        app.kubernetes.io/component: "gateway"
+    spec:
+      containers:
+        - name: grav-am-gateway
+          image: "graviteeio/am-gateway:3.2.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8092
+          livenessProbe:
+            tcpSocket:
+              port: 8092
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 8092
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          securityContext:
+            runAsUser: 1001
+          volumeMounts:
+            - name: config
+              mountPath: /opt/graviteeio-am-gateway/config/gravitee.yml
+              subPath: gravitee.yml
+      volumes:
+        - name: config
+          configMap:
+            name: grav-am-gateway
+---
+# Source: am/templates/ui/ui-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grav-am-management-ui
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: am
+      app.kubernetes.io/instance: grav-am
+      app.kubernetes.io/component: "management-ui"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 7412604ffade457267b9a7c94ead30a6a861c3b2d573f10de25201b5db11e36b
+      labels:
+        app.kubernetes.io/name: am
+        app.kubernetes.io/instance: grav-am
+        app.kubernetes.io/component: "management-ui"
+    spec:
+      containers:
+        - name: grav-am-management-ui
+          image: "graviteeio/am-management-ui:3.2.0"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MGMT_API_URL
+              value: "https://grav-dev-am.medimpact.com"
+            - name: MGMT_UI_URL
+              value: "https://grav-dev-am.medimpact.com/ui"
+            - name: HTTP_PORT
+              value: "8080"
+            - name: HTTPS_PORT
+              value: "8443"
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          securityContext:
+            runAsUser: 1001
+      volumes:
+        - name: config
+          configMap:
+            name: grav-am-management-ui
+---
+# Source: am/templates/ui/ui-autoscaler.yaml
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: grav-am-management-ui
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: grav-am-management-ui
+  minReplicas: 3
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 80
+---
+# Source: am/templates/api/api-ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: grav-am-management-api
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+  annotations:
+      ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_set_header if-match \"\";\n"
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+      nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+      nginx.ingress.kubernetes.io/session-cookie-name: "route"
+spec:
+  rules:
+    - host: "grav-dev-am.medimpact.com"
+      http:
+        paths:
+          - path: /management
+            backend:
+              serviceName: grav-am-management-api
+              servicePort: 83
+          - path: /admin
+            backend:
+              serviceName: grav-am-management-api
+              servicePort: 83
+  tls:
+    - hosts:
+      - grav-dev-am.medimpact.com
+---
+# Source: am/templates/gateway/gateway-ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: grav-am-gateway
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+  annotations:
+      # kubernetes.io/app-root: "/auth"
+      kubernetes.io/ingress.class: "nginx"
+      # kubernetes.io/rewrite-target: "/auth"
+      nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+      nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+      nginx.ingress.kubernetes.io/session-cookie-name: "route"
+spec:
+  rules:
+    - host: grav-dev-am-gw.medimpact.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: grav-am-gateway
+              servicePort: 82
+  tls:
+    - hosts:
+      - grav-dev-am-gw.medimpact.com
+---
+# Source: am/templates/ui/ui-ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: grav-am-management-ui
+  labels:
+    app.kubernetes.io/name: am
+    app.kubernetes.io/instance: grav-am
+    app.kubernetes.io/version: 3.1.2
+    app.kubernetes.io/component: "management-ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: am-1.0.10
+  annotations:
+      ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\n"
+      kubernetes.io/app-root: "/"
+      kubernetes.io/ingress.class: "nginx"
+      kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+    - host: grav-dev-am.medimpact.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: grav-am-management-ui
+              servicePort: 8002
+  tls:
+    - hosts:
+      - grav-dev-am.medimpact.com

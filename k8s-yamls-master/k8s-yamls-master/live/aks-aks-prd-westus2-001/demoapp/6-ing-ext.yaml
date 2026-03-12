@@ -1,0 +1,29 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # kubernetes.io/ingress.class: nginx-ext
+    # ip is 20.69.149.58 btw
+    # test-ilb: curl -k -H "Host: mi-akslab-demo.westus2.cloudapp.azure.com" http://10.224.0.113
+  name: demo-ingress-ext
+  namespace: demo
+spec:
+  ingressClassName: nginx-ext
+  rules:
+  # - host: mi-akslab-demo.trafficmanager.net
+  - host: demoapp-ext.medimpact.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: azure-vote-front-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - demoapp-ext.medimpact.com

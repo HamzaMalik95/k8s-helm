@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-host
+  namespace: monitoring
+data:
+  grafanahost: k8calab

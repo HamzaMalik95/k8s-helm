@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: clcs-qa
+  labels:
+    istio-injection: disabled
+    namespace: clcs-qa
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pss-enforce: "true"
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: clcs-qa
+spec:
+  hard:
+    limits.cpu: 130000m
+    limits.memory: 110G
+    requests.cpu: 4000m
+    requests.memory: 44G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: clcs-qa
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+      ephemeral-storage: 5Gi
+    defaultRequest:
+      cpu: 10m
+      memory: 100M
+      ephemeral-storage: 100Mi
+    max:
+      ephemeral-storage: 10Gi
+    type: Container
+---
+#default deny network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: clcs-qa
+spec:
+  podSelector: {}
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_dev_clcs-qa
+  namespace: clcs-qa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_dev_clcs-qa
+---
+#bind power-users AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_cluster-power-users
+  namespace: clcs-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_cluster-power-users

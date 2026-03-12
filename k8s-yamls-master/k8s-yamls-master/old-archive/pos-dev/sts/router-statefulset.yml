@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ROUTER
+  namespace: ppas-dev
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: ROUTER
+  serviceName: ROUTER-headless # needs to match the headless service name
+  template:
+    metadata:
+      labels:
+        app: ROUTER
+    spec:
+      containers:
+      - name: ROUTER
+        image: docker-local.artifactory.medimpact.com/someimage:v1
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh","-c","sleep 10"]
+        livenessProbe: {}
+        ports:
+        - containerPort: 9999
+          name: http
+          protocol: TCP
+        - containerPort: 8888
+          name: tcp-zmq
+          protocol: TCP
+        readinessProbe: {}
+        resources: {}
+      securityContext: {}
+  updateStrategy:
+    type: RollingUpdate

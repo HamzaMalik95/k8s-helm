@@ -1,0 +1,9 @@
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - host: pmm-dev.medimpact.com
+      paths: 
+        - "/"
+  pathType: Prefix
+  

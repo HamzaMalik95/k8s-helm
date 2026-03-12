@@ -1,0 +1,1792 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd
+  namespace: fluentd
+data:
+  fluent.conf: |-
+    @include sources.conf
+    @include kubernetes.conf
+    @include splunk.conf
+
+  splunk.conf: |-
+    <label @NORMAL>
+      <match pods.{ai-dev,ai-qa,ai-uat,ai-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_AI'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{argocd-dev,argocd-lab,argocd-prod,argocd}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_ARGOCD'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{bia-dev,bia-qa,bia-uat,bia-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_BIA'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{ccs-dev,ccs-qa,ccs-uat,ccs-e2e,ccs-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CCS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{cis-dev,cis-qa,cis-uat,cis-e2e,cis-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CIS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{clcs-dev,clcs-qa,clcs-uat,clcs-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CLCS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{clm-dev,clm-qa,clm-uat,clm-e2e,clm-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CLM'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{con-solns-dev,con-solns-qa,con-solns-uat,con-solns-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CON_SOLNS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{corpcomm-dev,corpcomm-qa,corpcomm-uat,corpcomm-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CORPCOMM'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{cts-dev,cts-qa,cts-uat,cts-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_CTS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{devops-dev,devops-prod,jenkins-dev,jenkins-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_DEVOPS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{eas-dev,eas-qa,eas-uat,eas-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_EAS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{gps-dev,gps-qa,gps-demo,gps-uat,gps-e2e,gps-stage,gps-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_GPS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{iam-dev,iam-qa,iam-uat,iam-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_IAM'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{ingress-nginx}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_INGRESS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{innovation-dev,innovation-qa,innovation-uat,innovation-prod,innovation,qa-innovation}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_INNOVATION'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{gravitee-lab,gravitee-dev,gravitee-qa,gravitee-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_GRAVITEE'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{itapps-dev,itapps-qa,itapps-uat,itapps-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_ITAPPS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{lucida-dev,lucida-qa,lucida-uat,lucida-e2e,lucida-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_LUCIDA'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{mcm-dev,mcm-qa,mcm-uat,mcm-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_MCM'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{medadjust-dev,medadjust-qa,medadjust-uat,medadjust-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_MEDADJUST'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{medresponse-dev,medresponse-qa,medresponse-uat,medresponse-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_MEDRESPONSE'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{mfs-dev,mfs-qa,mfs-uat,mfs-e2e,mfs-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_MFS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{mids-dev,mids-qa,mids-uat,mids-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_MIDS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{mms-dev,mms-qa,mms-e2e,mms-uat,mms-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_MMS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{pas-dev,pas-qa,pas-uat,pas-e2e,pas-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PAS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{pfwa-dev,pfwa-qa,pfwa-uat,pfwa-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PFWA'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{pha-ntwk-dev,pha-ntwk-qa,pha-ntwk-uat,pha-ntwk-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PHA_NTWK'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{perf-enablement-dev,perf-enablement-qa,perf-enablement-uat,perf-enablement-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PERF_ENABLEMENT'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{portalteam-dev,portalteam-qa,portalteam-uat,portalteam-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PORTALTEAM'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{ppas-dev,ppas-dev2,ppas-qa,ppas-qa2,ppas-uat,ppas-e2e,ppas-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PPAS'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{dmp-dev,dmp-qa,dmp-uat,dmp-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_DMP'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{fmp-dev,fmp-dev2,fmp-qa,fmp-qa2,fmp-uat,fmp-prod,fmp-pp,fmp-training}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_FMP'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{fxa-dev,fxa-qa,fxa-uat,fxa-e2e,fxa-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_FXA'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{pap-dev,pap-qa,pap-uat,pap-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PAP'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{pbmp,pbmp-dev,pbmp-qa,pbmp-uat,pbmp-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PBMP'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+
+      <match pods.{pdp-dev,pdp-qa,pdp-uat,pdp-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_PDP'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match pods.{spc-dev,spc-qa,spc-uat,spc-prod}.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_SPC'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match kube-apiserver-audit.**>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_AUDIT'] || nil}"
+        
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>
+      
+      <match **>
+        @type splunk_hec
+        
+        host "#{ENV['FLUENT_SPLUNK_HEC_HOST'] || nil}"
+        port "#{ENV['FLUENT_SPLUNK_HEC_PORT'] || '8088'}"
+        token "#{ENV['FLUENT_SPLUNK_HEC_TOKEN_DEFAULT'] || nil}"
+      
+        # metadata parameter
+        default_source "#{ENV['FLUENT_SPLUNK_HEC_SOURCE'] || 'fluentd-splunkhec'}"
+        default_sourcetype "#{ENV['FLUENT_SPLUNK_HEC_SOURCE_TYPE'] || 'fluentd-splunkhec'}"
+        # source_key K8S_CONTAINER
+      
+        use_fluentd_time "#{ENV['FLUENT_SPLUNK_HEC_USE_FLUENTD_TIME'] || true}"
+        time_as_integer "#{ENV['FLUENT_SPLUNK_HEC_TIME_AS_INTEGER'] || false}"
+      
+        # ack parameter
+        use_ack "#{ENV['FLUENT_SPLUNK_HEC_USE_ACK'] || false}"
+        ack_interval "#{ENV['FLUENT_SPLUNK_HEC_ACK_INTERVAL'] || '1'}"
+        ack_retry_limit "#{ENV['FLUENT_SPLUNK_HEC_ACK_RETRY_LIMIT'] || '3'}"
+      
+        # ssl parameter
+        use_ssl "#{ENV['FLUENT_SPLUNK_HEC_USE_SSL'] || true}"
+        ssl_verify "#{ENV['FLUENT_SPLUNK_HEC_SSL_VERIFY'] || true}"
+        ca_file "#{ENV['FLUENT_SPLUNK_HEC_CA_FILE'] || '/etc/ssl/certs/ca-bundle.crt'}"
+      
+        # buffered output parameter
+        flush_interval "#{ENV['FLUENT_SPLUNK_HEC_FLUSH_INTERVAL'] || '10s'}"
+      </match>      
+    </label>
+    
+    # <match **>
+    #   @type stdout
+    # </match>
+    
+  kubernetes.conf: |-
+    # <match fluent.**>
+      # @type null
+    # </match>
+    <label @FLUENT_LOG>
+      <match fluent.**>
+        @type null
+      </match>
+    </label>
+    
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+      @id filter_kube_metadata
+      watch false
+      skip_labels true
+      skip_container_metadata true
+      skip_master_url true
+      skip_namespace_metadata true
+    </filter>
+    
+    
+    #######################################################################################
+    #######################################################################################
+    # The logs from containerd put the podname, the namespace, and the container name in the logfile name
+    # The in_tail_log plugin grabs the log filename/path and uses that as the tag, replacing / with .
+    # So, let's get k8s records from the resulting tag name: var.log.containers.<important stuff in the 4th part>.log
+    
+    # Put the 4th tag part into CONTAINER_NAME for later regex parsing
+    <filter rawpods.**>
+      @type record_transformer
+      <record>
+        CONTAINER_NAME ${tag_parts[4]}
+      </record>
+    </filter>
+    
+    # Use regex to parse the CONTAINER_NAME field, and rewrite the tag (and re-emit the record), using namespace, pod, and container names
+    <match rawpods.**>
+      @type rewrite_tag_filter
+      <rule>
+        key CONTAINER_NAME
+        pattern ^([^_]+)_([^_]+)_([^_]+)-[a-z0-9]+$
+        tag pods.$2.$1.$3
+      </rule>
+    </match>
+    
+    # Now take those tags and write fields with important k8s values
+    <filter pods.**>
+      @type record_transformer
+      remove_keys stream
+      <record>
+        K8S_NAMESPACE ${tag_parts[1]}
+        K8S_POD ${tag_parts[2]}
+        K8S_CONTAINER ${tag_parts[3]}
+        K8S_NODE "#{ENV['K8S_NODE_NAME']}"
+        K8S_CLUSTER "#{ENV['K8S_CLUSTER'] || 'undefined'}"
+        # MESSAGE ${record["log"]}
+      </record>
+    </filter>
+    #######################################################################################
+    #######################################################################################
+    
+    
+    #######################################################################################
+    #######################################################################################
+    # Add cluster name to audit logs
+    <filter kube-apiserver-audit.**>
+      @type record_transformer
+      <record>
+        K8S_CLUSTER "#{ENV['K8S_CLUSTER'] || 'undefined'}"
+      </record>
+    </filter>
+    
+    #######################################################################################
+    #######################################################################################
+    
+    
+    #######################################################################################
+    #######################################################################################
+    # Generic filters for overly verbose or unnecessary logs to save splunk costs
+    
+    # Filter out annoying configmap old resource version messages
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern ConfigMap ended with: too old resource version
+      </exclude>
+    </filter>
+    
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /I.*ClientConn switching balancer to \"pick_first\"/
+      </exclude>
+    </filter>
+    
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /I.*parsed scheme: \"\"$/
+      </exclude>
+    </filter>
+    
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /I.*scheme \"\" not registered, fallback to default scheme$/
+      </exclude>
+    </filter>
+    
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /I.*ClientConn switching balancer to \"pick_first\"$/
+      </exclude>
+    </filter>
+    
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /I.*blockingPicker: the picked transport is not ready, loop back to repick$/
+      </exclude>
+    </filter>
+    
+    <filter kubelet.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /I.*ccResolverWrapper: sending update to cc/
+      </exclude>
+    </filter>
+    
+    # Always filter fluentd containers just in case
+    <filter pods.**>
+      @type grep
+      <exclude>
+        key CONTAINER_NAME
+        pattern fluentd
+      </exclude>
+    </filter>
+    
+    # Always filter calico because its super verbose
+    <filter pods.**>
+      @type grep
+      <exclude>
+        key CONTAINER_NAME
+        pattern calico
+      </exclude>
+    </filter>
+    
+    # Always filter vsphere-csi-node because its super verbose
+    <filter pods.**>
+      @type grep
+      <exclude>
+        key CONTAINER_NAME
+        pattern vsphere-csi-node
+      </exclude>
+    </filter>
+    
+    # Always filter vsphere csi liveness-probe container
+    <filter pods.**>
+      @type grep
+      <exclude>
+        key CONTAINER_NAME
+        pattern liveness-probe
+      </exclude>
+    </filter>
+    
+    # Always filter pharmacy-search-ws-* because its super verbose
+    #<filter pods.**>
+    #  @type grep
+    #  <exclude>
+    #    key CONTAINER_NAME
+    #    pattern pharmacy-search-ws
+    #  </exclude>
+    #</filter>
+    
+    # Always filter dashboard-metrics-scraper because its super verbose
+    <filter pods.**>
+      @type grep
+      <exclude>
+        key CONTAINER_NAME
+        pattern dashboard-metrics-scraper
+      </exclude>
+    </filter>
+    
+    # Filter out lock and lease messages from csi-attacher/provisioner/resizer components in vmware-system-csi namespace
+    <filter pods.vmware-system-csi.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /(lock is held|failed to acquire lease)/
+      </exclude>
+    </filter>
+    
+    # Filter out lock and lease messages from leader elector components in vault namespaces
+    <filter pods.{vault-lab,vault-dev,vault-prod}.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /(lock is held|failed to acquire lease)/
+      </exclude>
+    </filter>
+    
+    # Filter out ingress-nginx namespace which is overly verbose
+    <filter pods.ingress-nginx.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern .*
+      </exclude>
+    </filter>
+    
+    # Temporary filter for sensitive nginx log data message - currently not necessary since the entire namespace is filtered in previous rule
+    # <filter pods.ingress-nginx.**>
+      # @type grep
+      # <exclude>
+        # key MESSAGE
+        # pattern password=
+      # </exclude>
+    # </filter>
+    
+    # Filter out monitoring namespace which is overly verbose
+    <filter pods.monitoring.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern .*
+      </exclude>
+    </filter>
+    
+    # # Filter out pha-ntwk-* namespaces temporarily
+    # <filter pods.{pha-ntwk-dev,pha-ntwk-qa,pha-ntwk-uat,pha-ntwk-prod}.**>
+      # @type grep
+      # <exclude>
+        # key MESSAGE
+        # pattern .*
+      # </exclude>
+    # </filter>
+    
+    # Filter out itapps-* namespaces temporarily
+    <filter pods.{itapps-dev,itapps-qa,itapps-uat,itapps-prod}.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern .*
+      </exclude>
+    </filter>
+    
+    # Filter out argocd namespaces temporarily
+    #<filter pods.{argocd-lab,argocd-dev,argocd-prod,argocd}.**>
+    #  @type grep
+    #  <exclude>
+    #    key MESSAGE
+    #    pattern .*
+    #  </exclude>
+    #</filter>
+    
+    # Filter for out kube-probe logs in gravitee
+    <filter pods.{gravitee-lab,gravitee-dev,gravitee-prod}.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern kube-probe
+      </exclude>
+    </filter>
+    
+    # Filter out this series of overly verbose apiserver info logs
+    <filter pods.{kube-system}.**>
+      @type grep
+      <exclude>
+        key MESSAGE
+        pattern /ClientConn switching balancer to "pick_first"|parsed scheme: "passthrough"|ccResolverWrapper: sending update to cc:/
+      </exclude>
+    </filter>
+    
+    #######################################################################################
+    #######################################################################################
+    
+    # Remove non-essential records
+    <filter **>
+      @type record_transformer
+      remove_keys SYSLOG_FACILITY,_BOOT_ID,_CAP_EFFECTIVE,_CMDLINE,_COMM,_EXE,_GID,_MACHINE_ID,_PID,_STREAM_ID,_SYSTEMD_CGROUP,_SYSTEMD_SLICE,_SYSTEMD_UNIT,_TRANSPORT,_UID
+    </filter>
+    
+    #######################################################################################
+    #######################################################################################
+    # Concat java multiline logs for specific namespaces
+    <filter pods.{ai-dev,ai-qa,ai-uat,,ai-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{argocd-dev,argocd-lab,argocd-prod,argocd}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{bia-dev,bia-qa,bia-uat,,bia-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{ccs-dev,ccs-qa,ccs-uat,ccs-e2e,ccs-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{clcs-dev,clcs-qa,clcs-uat,clcs-e2e,clcs-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{clm-dev,clm-qa,clm-uat,clm-e2e,clm-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{con-solns-dev,con-solns-qa,con-solns-uat,con-solns-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{corpcomm-dev,corpcomm-qa,corpcomm-uat,corpcomm-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{cts-dev,cts-qa,cts-uat,cts-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{devops-dev,devops-prod,jenkins-dev,jenkins-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{eas-dev,eas-qa,eas-uat,eas-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{gps-dev,gps-qa,gps-demo,gps-uat,gps-e2e,gps-stage,gps-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{iam-dev,iam-qa,iam-uat,iam-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{gravitee-lab,gravitee-dev,gravitee-qa,gravitee-prod}.**>
+      @type concat
+      key MESSAGE
+      # multiline_start_regexp /^\d{2}:\d{2}:\d{2}/
+      multiline_start_regexp /^\[\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{innovation-dev,innovation-qa,innovation-uat,innovation-prod,innovation,qa-innovation}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{mcm-dev,mcm-qa,mcm-uat,mcm-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{mfs-dev,mfs-qa,mfs-uat,mfs-e2e,mfs-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{medadjust-dev,medadjust-qa,medadjust-uat,medadjust-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{medresponse-dev,medresponse-qa,medresponse-uat,medresponse-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{mms-dev,mms-qa,mms-e2e,mms-uat,mms-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{pas-dev,pas-qa,pas-uat,pas-e2e,pas-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{pbmp,pbmp-dev,pbmp-qa,pbmp-uat,pbmp-prod,dmp-dev,dmp-qa,dmp-uat,dmp-prod,fmp-dev,fmp-qa,fmp-uat,fmp-prod,fxa-e2e,pap-dev,pap-qa,pap-uat,pap-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+
+    <filter pods.{pdp-dev,pdp-qa,pdp-uat,pdp-e2e,pdp-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{pha-ntwk-dev,pha-ntwk-qa,pha-ntwk-uat,pha-ntwk-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{perf-enablement-dev,perf-enablement-qa,perf-enablement-uat,perf-enablement-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{portalteam-dev,portalteam-qa,portalteam-uat,portalteam-prod}.**>
+      @type concat
+      key MESSAGE
+      multiline_start_regexp /\d{4}-\d{1,2}-\d{1,2}/
+      use_first_timestamp true
+      flush_interval 5s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    <filter pods.{ppas-dev,ppas-dev2,ppas-qa,ppas-qa2,ppas-uat,ppas-e2e,ppas-prod}.**>
+      @type concat
+      key MESSAGE
+      # 20240306 105345.043 POSService Transaction
+      # multiline_start_regexp /\d{8} \d{6}\.\d{3} POSService Transaction/
+      # 070324|07:24:56.456|8892765580.11322.1709825096.455905|INFO    |11322|POSService Transaction
+      # multiline_start_regexp /\d{6}\|\d{2}:\d{2}:\d{2}\.\d{3}\|\d+\.\d+\.\d+\.\d+\|INFO    \|\d+\|POSService Transaction/
+      # The second to last field is PID. In k8s for internally developed apps this will almost always be 1. If not, change to \d+
+      # 030824|02:21:39.302|17393202759.1.1709864492.896591|INFO    |1|Request:
+      multiline_start_regexp /\d{6}\|\d{2}:\d{2}:\d{2}\.\d{3}\|\d+\.\d+\.\d+\.\d+\|INFO    \|1\|Request:/
+      use_first_timestamp true
+      flush_interval 32s
+      timeout_label @NORMAL
+      @log_level warn
+    </filter>
+    
+    # Label everything @NORMAL (This is initially a workaround for the concat filter timeouts but has other useful properties)
+    <match **>
+      @type relabel
+      @label @NORMAL
+    </match>
+    #######################################################################################
+    #######################################################################################
+
+  sources.conf: |-
+    # Logs from systemd-journal for interesting services.
+    <source>
+      @type systemd
+      @id in_systemd_kubelet
+      path /run/log/journal
+      matches [{ "_SYSTEMD_UNIT": "kubelet.service" }]
+      <storage>
+        @type local
+        path "#{ENV['FLUENT_POS_PATH'] || '/var/log/fluentd'}-journald-kubelet"
+        #path /var/log/fluentd-journald-kubelet
+      </storage>
+      read_from_head true
+      tag kubelet
+    </source>
+    
+    # Logs from containerd-systemd
+    <source>
+      @type systemd
+      @id in_systemd_containerd
+      path /run/log/journal
+      matches [{ "_SYSTEMD_UNIT": "containerd.service" }]
+      <storage>
+        @type local
+        path "#{ENV['FLUENT_POS_PATH'] || '/var/log/fluentd'}-journald-containerd"
+        #path /var/log/fluentd-journald-containerd
+      </storage>
+      read_from_head true
+      tag containerd.systemd
+    </source>
+    
+    # Logs from etcd
+    <source>
+      @type systemd
+      @id in_systemd_etcd
+      path /run/log/journal
+      matches [{ "_SYSTEMD_UNIT": "etcd.service" }]
+      <storage>
+        @type local
+        path "#{ENV['FLUENT_POS_PATH'] || '/var/log/fluentd'}-journald-etcd"
+        #path /var/log/fluentd-journald-etcd
+      </storage>
+      read_from_head true
+      tag etcd
+    </source>
+    
+    Pod logs
+    <source>
+      @type tail
+      @id in_tail_pod_logs
+      path /var/log/containers/*.log
+      pos_file "#{ENV['FLUENT_POS_PATH'] || '/var/log/fluentd'}-pods.pos"
+      # pos_file_compaction_interval 72h
+      tag rawpods.*
+      read_from_head true
+      # format none
+      <parse>
+        @type "#{ENV['FLUENT_CONTAINER_TAIL_PARSER_TYPE'] || 'none'}"
+      </parse>
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+    </source>
+    
+    # Audit logs
+    <source>
+      @type tail
+      @id in_tail_audit_logs
+      path /var/log/kubernetes/audit/audit.log
+      pos_file "#{ENV['FLUENT_POS_PATH'] || '/var/log/fluentd'}-k8-audit.log.pos"
+      #pos_file /var/log/audit.log.pos
+      tag kube-apiserver-audit.*
+      read_from_head true
+      format json
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+    </source>
+    

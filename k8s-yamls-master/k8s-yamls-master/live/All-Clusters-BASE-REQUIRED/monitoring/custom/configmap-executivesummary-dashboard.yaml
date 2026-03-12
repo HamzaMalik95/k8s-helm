@@ -1,0 +1,1812 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-executive-summary
+  namespace: monitoring
+data:
+  executive-summary.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 0,
+      "id": 52,
+      "iteration": 1694031633648,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 40,
+          "panels": [],
+          "title": "Global capacity",
+          "type": "row"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 0,
+            "y": 1
+          },
+          "id": 22,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.4.3",
+          "targets": [
+            {
+              "expr": "sum (kube_node_info{node=~\".*no[0-9]+.*\",cluster=~\"$cluster\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "Nodes",
+              "queryType": "randomWalk",
+              "refId": "A"
+            }
+          ],
+          "title": "Nodes",
+          "type": "stat"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 6,
+            "y": 1
+          },
+          "id": 28,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.4.3",
+          "targets": [
+            {
+              "expr": "sum (kube_pod_status_phase{phase!=\"\",cluster=~\"$cluster\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "Pods",
+              "queryType": "randomWalk",
+              "refId": "A"
+            }
+          ],
+          "title": "Pods",
+          "type": "stat"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 12,
+            "y": 1
+          },
+          "id": 24,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.4.3",
+          "targets": [
+            {
+              "expr": "sum(node:node_num_cpu:sum{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "queryType": "randomWalk",
+              "refId": "A"
+            }
+          ],
+          "title": "vCPUs",
+          "type": "stat"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {},
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 18,
+            "y": 1
+          },
+          "id": 26,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.4.3",
+          "targets": [
+            {
+              "expr": "sum(node_memory_MemTotal_bytes{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "queryType": "randomWalk",
+              "refId": "A"
+            }
+          ],
+          "title": "Memory",
+          "type": "stat"
+        },
+        {
+          "collapsed": true,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 7
+          },
+          "id": 10,
+          "panels": [
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 0,
+                "y": 8
+              },
+              "id": 6,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "aks-aks-dev-westus2-001",
+                  "value": "aks-aks-dev-westus2-001"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_node_info{node=~\".*no[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Nodes",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Nodes",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 6,
+                "y": 8
+              },
+              "id": 2,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "aks-aks-dev-westus2-001",
+                  "value": "aks-aks-dev-westus2-001"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_pod_status_phase{phase!=\"\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Pods",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Pods",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 12,
+                "y": 8
+              },
+              "id": 4,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "aks-aks-dev-westus2-001",
+                  "value": "aks-aks-dev-westus2-001"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node:node_num_cpu:sum{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "vCPUs",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 18,
+                "y": 8
+              },
+              "id": 8,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "aks-aks-dev-westus2-001",
+                  "value": "aks-aks-dev-westus2-001"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node_memory_MemTotal_bytes{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Memory",
+              "type": "stat"
+            }
+          ],
+          "repeat": "cluster",
+          "scopedVars": {
+            "cluster": {
+              "selected": false,
+              "text": "aks-aks-dev-westus2-001",
+              "value": "aks-aks-dev-westus2-001"
+            }
+          },
+          "title": "$cluster cluster capacity",
+          "type": "row"
+        },
+        {
+          "collapsed": true,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 8
+          },
+          "id": 41,
+          "panels": [
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 0,
+                "y": 9
+              },
+              "id": 42,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 6,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "azprod",
+                  "value": "azprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_node_info{node=~\".*no[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Nodes",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Nodes",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 6,
+                "y": 9
+              },
+              "id": 43,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 2,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "azprod",
+                  "value": "azprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_pod_status_phase{phase!=\"\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Pods",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Pods",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 12,
+                "y": 9
+              },
+              "id": 44,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 4,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "azprod",
+                  "value": "azprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node:node_num_cpu:sum{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "vCPUs",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 18,
+                "y": 9
+              },
+              "id": 45,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 8,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "azprod",
+                  "value": "azprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node_memory_MemTotal_bytes{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Memory",
+              "type": "stat"
+            }
+          ],
+          "repeatIteration": 1694031633648,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "cluster": {
+              "selected": false,
+              "text": "azprod",
+              "value": "azprod"
+            }
+          },
+          "title": "$cluster cluster capacity",
+          "type": "row"
+        },
+        {
+          "collapsed": true,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 46,
+          "panels": [
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 0,
+                "y": 10
+              },
+              "id": 47,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 6,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "cadev",
+                  "value": "cadev"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_node_info{node=~\".*no[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Nodes",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Nodes",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 6,
+                "y": 10
+              },
+              "id": 48,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 2,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "cadev",
+                  "value": "cadev"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_pod_status_phase{phase!=\"\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Pods",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Pods",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 12,
+                "y": 10
+              },
+              "id": 49,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 4,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "cadev",
+                  "value": "cadev"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node:node_num_cpu:sum{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "vCPUs",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 18,
+                "y": 10
+              },
+              "id": 50,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 8,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "cadev",
+                  "value": "cadev"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node_memory_MemTotal_bytes{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Memory",
+              "type": "stat"
+            }
+          ],
+          "repeatIteration": 1694031633648,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "cluster": {
+              "selected": false,
+              "text": "cadev",
+              "value": "cadev"
+            }
+          },
+          "title": "$cluster cluster capacity",
+          "type": "row"
+        },
+        {
+          "collapsed": true,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 10
+          },
+          "id": 51,
+          "panels": [
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 0,
+                "y": 8
+              },
+              "id": 52,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 6,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "calab",
+                  "value": "calab"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_node_info{node=~\".*no[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Nodes",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Nodes",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 6,
+                "y": 8
+              },
+              "id": 53,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 2,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "calab",
+                  "value": "calab"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_pod_status_phase{phase!=\"\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Pods",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Pods",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 12,
+                "y": 8
+              },
+              "id": 54,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 4,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "calab",
+                  "value": "calab"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node:node_num_cpu:sum{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "vCPUs",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 18,
+                "y": 8
+              },
+              "id": 55,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 8,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "calab",
+                  "value": "calab"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node_memory_MemTotal_bytes{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Memory",
+              "type": "stat"
+            }
+          ],
+          "repeatIteration": 1694031633648,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "cluster": {
+              "selected": false,
+              "text": "calab",
+              "value": "calab"
+            }
+          },
+          "title": "$cluster cluster capacity",
+          "type": "row"
+        },
+        {
+          "collapsed": true,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 11
+          },
+          "id": 56,
+          "panels": [
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 0,
+                "y": 8
+              },
+              "id": 57,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 6,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "caprod",
+                  "value": "caprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_node_info{node=~\".*no[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Nodes",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Nodes",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 6,
+                "y": 8
+              },
+              "id": 58,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 2,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "caprod",
+                  "value": "caprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum (kube_pod_status_phase{phase!=\"\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "Pods",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Pods",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "none"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 12,
+                "y": 8
+              },
+              "id": 59,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 4,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "caprod",
+                  "value": "caprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node:node_num_cpu:sum{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "vCPUs",
+              "type": "stat"
+            },
+            {
+              "datasource": "${datasource}",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {},
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 18,
+                "y": 8
+              },
+              "id": 60,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+              },
+              "pluginVersion": "7.4.3",
+              "repeatIteration": 1694031633648,
+              "repeatPanelId": 8,
+              "repeatedByRow": true,
+              "scopedVars": {
+                "cluster": {
+                  "selected": false,
+                  "text": "caprod",
+                  "value": "caprod"
+                }
+              },
+              "targets": [
+                {
+                  "expr": "sum(node_memory_MemTotal_bytes{node!~\".*ma[0-9]+.*\",cluster=~\"$cluster\"})",
+                  "instant": true,
+                  "interval": "",
+                  "legendFormat": "",
+                  "queryType": "randomWalk",
+                  "refId": "A"
+                }
+              ],
+              "title": "Memory",
+              "type": "stat"
+            }
+          ],
+          "repeatIteration": 1694031633648,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "cluster": {
+              "selected": false,
+              "text": "caprod",
+              "value": "caprod"
+            }
+          },
+          "title": "$cluster cluster capacity",
+          "type": "row"
+        }
+      ],
+      "refresh": "1m",
+      "schemaVersion": 27,
+      "style": "dark",
+      "tags": [],
+      "templating": {
+        "list": [
+          {
+            "current": {
+              "selected": false,
+              "text": "default-victoriametrics",
+              "value": "default-victoriametrics"
+            },
+            "description": null,
+            "error": null,
+            "hide": 0,
+            "includeAll": false,
+            "label": null,
+            "multi": false,
+            "name": "datasource",
+            "options": [],
+            "query": "prometheus",
+            "queryValue": "",
+            "refresh": 1,
+            "regex": "/^((?!prometheus).)*$/",
+            "skipUrlSync": false,
+            "type": "datasource"
+          },
+          {
+            "allValue": ".*",
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "${datasource}",
+            "definition": "label_values(node_cpu_seconds_total, cluster)",
+            "description": null,
+            "error": null,
+            "hide": 0,
+            "includeAll": true,
+            "label": null,
+            "multi": false,
+            "name": "cluster",
+            "options": [],
+            "query": {
+              "query": "label_values(node_cpu_seconds_total, cluster)",
+              "refId": "StandardVariableQuery"
+            },
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          }
+        ]
+      },
+      "time": {
+        "from": "now-15m",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Executive Summary",
+      "uid": "NLci6Rj7z",
+      "version": 5
+    }

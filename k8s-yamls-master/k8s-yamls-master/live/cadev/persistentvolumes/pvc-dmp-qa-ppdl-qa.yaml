@@ -1,0 +1,16 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ppdl-qa
+  namespace: dmp-qa
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  # storageClassName: nfs
+  selector:
+    matchLabels:
+      volname: dmp-qa.ppdl-qa

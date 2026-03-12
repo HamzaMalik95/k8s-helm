@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.corpcomm-prod.sunrx-prod-mirror
+  labels: 
+    volname: corpcomm-prod.sunrx-prod-mirror
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.13.130.94
+    path: "/vol_pv2medvfiler4_corpcomm_prod_sunrx_prod_mirror/qtree_sunrx_prod"

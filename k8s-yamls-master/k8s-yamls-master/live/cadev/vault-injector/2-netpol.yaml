@@ -1,0 +1,19 @@
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: apiserver.vault-injector.443
+  # namespace: vault-dev
+# spec:
+  # ingress:
+    # - from:
+      # - ipBlock:
+          # cidr: 10.13.103.0/24
+          # cidr: 10.13.101.0/24
+      # ports:
+      # - port: 443
+        # protocol: TCP
+  # podSelector:
+    # matchLabels:
+      # app.kubernetes.io/name: vault-agent-injector
+  # policyTypes:
+  # - Ingress

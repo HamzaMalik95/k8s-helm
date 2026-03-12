@@ -1,0 +1,7 @@
+namespace: cgroeneveld
+bases:
+- ./../base
+patches:
+- custom.yaml
+resources:
+- namespace.yaml

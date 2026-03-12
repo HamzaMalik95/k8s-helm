@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hellopi
+  namespace: limited-namespace
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: hellopi
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hellopi
+      name: hellopi
+    spec:
+      containers:
+      - name: hellopi
+        image: drydock.medimpact.com/pi-job:1
+        command: ["perl"]
+        args: ["-Mbignum=bpi", "-wle", "print bpi(20000)"]
+        imagePullPolicy: IfNotPresent
+        resources: {}
+        securityContext:
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

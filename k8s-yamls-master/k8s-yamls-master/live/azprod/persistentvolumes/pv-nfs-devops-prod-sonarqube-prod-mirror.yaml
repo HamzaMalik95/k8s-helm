@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.devops-prod.sonarqube-prod-mirror
+  labels: 
+    volname:  devops-prod.sonarqube-prod-mirror
+spec:
+  capacity:
+    storage: 15Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.15.130.119
+    path: "/vol_pv1medvfiler4_k8s_sonarqube_prod_mirror/k8s_sonarqube_prod"

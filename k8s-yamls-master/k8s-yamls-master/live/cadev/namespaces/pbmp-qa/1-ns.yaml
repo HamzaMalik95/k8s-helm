@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pbmp-qa
+  labels:
+    istio-injection: disabled
+    namespace: pbmp-qa
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pss-enforce: "true"
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: pbmp-qa
+spec:
+  hard:
+    limits.cpu: 300000m
+    limits.memory: 240G
+    requests.cpu: 46000m
+    requests.memory: 102G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: pbmp-qa
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+      ephemeral-storage: 5Gi
+    defaultRequest:
+      cpu: 50m
+      memory: 100M
+      ephemeral-storage: 100Mi
+    max:
+      ephemeral-storage: 10Gi
+    type: Container
+---
+#default deny network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: pbmp-qa
+spec:
+  podSelector: {}
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_dev_pbmp-qa
+  namespace: pbmp-qa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_dev_pbmp-qa
+---
+#bind power-users AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_cluster-power-users
+  namespace: pbmp-qa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_cluster-power-users

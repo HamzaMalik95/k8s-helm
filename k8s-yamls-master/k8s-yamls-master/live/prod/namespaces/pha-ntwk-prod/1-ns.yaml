@@ -1,0 +1,94 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pha-ntwk-prod
+  labels:
+    istio-injection: disabled
+    namespace: pha-ntwk-prod
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pss-enforce: "true"
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: pha-ntwk-prod
+spec:
+  hard:
+    limits.cpu: 120000m
+    limits.memory: 150G
+    requests.cpu: 22000m
+    requests.memory: 68G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: pha-ntwk-prod
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+    defaultRequest:
+      cpu: 50m
+      memory: 100M
+    type: Container
+---
+#default deny network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: pha-ntwk-prod
+spec:
+  podSelector: {}
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_prod_pha-ntwk-prod
+  namespace: pha-ntwk-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_prod_pha-ntwk-prod
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_prod_pha-ntwk-prod-ro
+  namespace: pha-ntwk-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-viewers
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_prod_pha-ntwk-prod-ro
+---
+#bind power-users AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_cluster-power-users
+  namespace: pha-ntwk-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_cluster-power-users

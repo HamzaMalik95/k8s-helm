@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: opencve-crazy
+  # namespace: itsystems-dev
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: opencve-dev.medimpact.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: opencve-crazy
+            port:
+              number: 8000
+  tls:
+  - hosts:
+    - opencve-dev.medimpact.com

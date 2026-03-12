@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mms-e2e-filedrop
+  namespace: mms-e2e
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10G
+  selector:
+    matchLabels:
+      volname: mms-e2e.mms-e2e-filedrop

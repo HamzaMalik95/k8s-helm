@@ -1,0 +1,91 @@
+#title: GIO - Single Instance
+
+[<actor> External Caller]
+
+[External Caller] -> [Common IT Infrastructure]
+
+[<reference> Common IT Infrastructure|
+    existing|
+
+    [Perimeter|
+        [GSLB/Netscaler|
+            1 time configuration
+        ]
+    ]
+
+    [haproxy|
+        Layer 4 TCP LB
+        No configuration
+    ]
+    [nginx ingress|
+        Layer 7 HTTP LB
+        Kubernetes
+        1 time configuration (dynamic)
+    ]
+    [Perimeter] -> [haproxy]
+    [haproxy] -> [nginx ingress]
+]
+
+[GIO Deployment|
+    [GIO APIM GW|
+    	Kubernetes
+        Namespace: Gravitee
+        3 - 4 instances
+    ]
+    [GIO APIM Management UI|
+    	Kubernetes
+        Namespace: Gravitee
+        3 instances]
+    [GIO APIM Portal UI|
+    	Kubernetes
+        Namespace: Gravitee
+        3 instances
+    ]
+    [GIO APIM Rest API|
+    	Kubernetes
+        Namespace: Gravitee
+        3 instances
+    ]
+]
+[<database> MongoDB Cluster|
+	5 Nodes
+    Standard VMs
+    10Gig drive
+]
+[<database> ElasticSearch Cluster|
+	3 Nodes
+    Standard VMs
+    40Gig drive
+]
+[GIO Deployment] -> [MongoDB Cluster]
+[GIO Deployment] -> [ElasticSearch Cluster]
+[GIO Deployment] -> [<database>Splunk Cluster|Existing]
+
+[Netscaler|Existing]
+[<reference> Legacy MedImpact Web Services]
+[<reference> Future MedImpact Web Services]
+
+
+[Common IT Infrastructure] -> [GIO Deployment]
+[GIO Deployment] -> [Netscaler]
+[GIO Deployment] -> [Consul?]
+[Consul?] -> [Future MedImpact Web Services]
+[Netscaler] -> [Legacy MedImpact Web Services]
+
+[Dependencies|
+[<actor> Client service] -> [<reference>GSLB]
+[GSLB] -> [GW]
+[GW] -> [Rest API]
+[GW] -> [ES]
+[GW] -> [Splunk]
+[GW] -> [<reference>MI WebServices]
+[GW] -> [Mongo]
+
+[<actor> Developers] -> [Portal UI]
+[<actor> Developers] -> [Management UI]
+[<actor> Developers] -> [Rest API]
+[Rest API] -> [Mongo]
+]
+
+
+

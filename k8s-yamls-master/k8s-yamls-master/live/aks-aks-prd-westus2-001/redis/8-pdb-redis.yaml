@@ -1,0 +1,10 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: redis
+  namespace: itsystems-lab
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app: redis

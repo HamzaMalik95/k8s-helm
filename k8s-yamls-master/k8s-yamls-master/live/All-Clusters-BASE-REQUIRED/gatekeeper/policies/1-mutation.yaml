@@ -1,0 +1,332 @@
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: ModifySet
+metadata:
+  name: enforce-container-drop-all-capabilities
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.containers[name: *].securityContext.capabilities.drop"
+  parameters:
+    values:
+      fromList: ["ALL"]
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: ModifySet
+metadata:
+  name: enforce-init-container-drop-all-capabilities
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.initContainers[name: *].securityContext.capabilities.drop"
+  parameters:
+    values:
+      fromList: ["ALL"]
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: ModifySet
+metadata:
+  name: enforce-ephemeral-container-drop-all-capabilities
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.ephemeralContainers[name: *].securityContext.capabilities.drop"
+  parameters:
+    values:
+      fromList: ["ALL"]
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: enforce-pod-seccomp-runtime-default
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.securityContext.seccompProfile.type"
+  parameters:
+    assign:
+      value: "RuntimeDefault"
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: enforce-pod-run-as-non-root
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.securityContext.runAsNonRoot"
+  parameters:
+    assign:
+      value: true
+      
+# ---
+# apiVersion: mutations.gatekeeper.sh/v1alpha1
+# kind: Assign
+# metadata:
+  # name: enforce-pod-fsgroup-if-not-exist
+# spec:
+  # applyTo:
+    # - groups: [""]
+      # versions: ["v1"]
+      # kinds: ["Pod"]
+  # match:
+    # scope: Namespaced
+    # kinds:
+    # - apiGroups: ["*"]
+      # kinds: ["Pod"]
+    # namespaceSelector:
+      # matchExpressions:
+        # - key: pss-enforce
+          # operator: In
+          # values: ["true"]
+    # excludedNamespaces:
+      # - "kube-system"
+      # - "fluentd"
+      # - "gatekeeper-system"
+      # - "monitoring"
+      # - "vmware-system-csi"
+      # - "tigera-operator"
+      # - "calico-system"
+  # location: "spec.securityContext.fsGroup"
+  # parameters:
+    # assign:
+      # value: 70001
+    # pathTests:
+    # - subPath: "spec.securityContext.fsGroup"
+      # condition: MustNotExist
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: enforce-container-privilege-escalation
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.containers[name: *].securityContext.allowPrivilegeEscalation"
+  parameters:
+    assign:
+      value: false
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: enforce-init-container-privilege-escalation
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.initContainers[name: *].securityContext.allowPrivilegeEscalation"
+  parameters:
+    assign:
+      value: false
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: enforce-ephemeral-container-privilege-escalation
+spec:
+  applyTo:
+    - groups: [""]
+      versions: ["v1"]
+      kinds: ["Pod"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.ephemeralContainers[name: *].securityContext.allowPrivilegeEscalation"
+  parameters:
+    assign:
+      value: false
+
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: enforce-revision-history-limit
+spec:
+  applyTo:
+    - groups: ["apps"]
+      versions: ["v1"]
+      kinds: ["Deployment"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Deployment"]
+    namespaceSelector:
+      matchExpressions:
+        - key: pss-enforce
+          operator: In
+          values: ["true"]
+    excludedNamespaces:
+      - "kube-system"
+      - "fluentd"
+      - "gatekeeper-system"
+      - "monitoring"
+      - "vmware-system-csi"
+      - "tigera-operator"
+      - "calico-system"
+  location: "spec.revisionHistoryLimit"
+  parameters:
+    assign:
+      value: 2
+

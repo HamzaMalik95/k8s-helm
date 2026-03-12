@@ -1,0 +1,117 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: con-solns-prod
+  labels:
+    istio-injection: disabled
+    namespace: con-solns-prod
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: con-solns-prod
+spec:
+  hard:
+    limits.cpu: 30000m
+    limits.memory: 22G
+    requests.cpu: 3200m
+    requests.memory: 10G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: con-solns-prod
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+      ephemeral-storage: 5Gi
+    defaultRequest:
+      cpu: 50m
+      memory: 100M
+      ephemeral-storage: 100Mi
+    max:
+      ephemeral-storage: 10Gi
+    type: Container
+---
+# Allow istio prometheus to istio sidecars
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-allow-istio-telemetry
+  namespace: con-solns-prod
+spec:
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            namespace: istio-system
+        podSelector:
+          matchLabels:
+            app: prometheus
+      ports:
+      - port: 15090
+        protocol: TCP
+  podSelector: {}
+  policyTypes:
+  - Ingress
+---
+#default deny network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: con-solns-prod
+spec:
+  podSelector: {}
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_prod_con-solns-prod
+  namespace: con-solns-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_prod_con-solns-prod
+---
+#bind AD group to the viewers role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_prod_con-solns-prod-ro
+  namespace: con-solns-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-viewers
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_prod_con-solns-prod-ro
+---
+#bind power-users AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_cluster-power-users
+  namespace: con-solns-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: Kube_cluster-power-users

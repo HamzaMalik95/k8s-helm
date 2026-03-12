@@ -1,0 +1,16 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sidfmgtnonprod
+  namespace: fxa-e2e
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs
+  selector:
+    matchLabels:
+      volname: fxa-e2e.sidfmgtnonprod

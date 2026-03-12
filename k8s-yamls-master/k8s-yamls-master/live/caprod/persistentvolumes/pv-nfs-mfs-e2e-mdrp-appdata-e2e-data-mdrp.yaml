@@ -1,0 +1,25 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.mfs-e2e.mdrp-appdata-e2e-data-mdrp
+  # annotations:
+    # volume.beta.kubernetes.io/mount-options: rsize=8192,wsize=8192,timeo=14,intr,vers=3
+  labels: 
+    volname: mfs-e2e.mdrp-appdata-e2e-data-mdrp
+spec:
+  capacity:
+    storage: 1000Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  # storageClassName: nfs
+  nfs:
+    server: 10.13.130.93
+    path: "/vol_pv1medvfiler4_appdata_dev/e2e/data/mdrp"

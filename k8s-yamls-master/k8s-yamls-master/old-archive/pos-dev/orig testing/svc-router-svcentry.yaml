@@ -1,0 +1,51 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: service-router-0
+  namespace: pos-dev
+spec:
+  exportTo:
+  - "."
+  hosts:
+  - service-router-0.headless-service-router.pos-dev.svc.cluster.local
+  location: MESH_INTERNAL
+  ports:
+  - name: tcp
+    number: 49500
+    protocol: tcp
+  resolution: DNS
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+  # name: service-router-0
+  # namespace: pos-dev
+# spec:
+  # hosts:
+  # - service-router-0.headless-service-router.pos-dev.svc.cluster.local
+  # http:
+  # - match:
+    # - uri:
+        # prefix: /
+    # route:
+    # - destination:
+        # host: service-router-0.headless-service-router.pos-dev.svc.cluster.local
+        # port:
+          # number: 49500
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: ServiceEntry
+# metadata:
+  # name: service-router-0
+  # namespace: pos-dev
+# spec:
+  # exportTo:
+  # - "."
+  # hosts:
+  # - headless-service-router.pos-dev.svc.cluster.local
+  # location: MESH_INTERNAL
+  # ports:
+  # - name: tcp
+    # number: 49500
+    # protocol: tcp
+  # resolution: DNS

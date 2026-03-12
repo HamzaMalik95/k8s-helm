@@ -1,0 +1,125 @@
+mdeckert@vd1medsys0006:~$ aws configure
+AWS Access Key ID [None]: <REDACTED_AWS_ACCESS_KEY_ID>
+AWS Secret Access Key [None]: <REDACTED_AWS_SECRET_ACCESS_KEY>                                                                                                                                           Default region name [None]: us-west-2
+Default output format [None]: json
+
+
+
+
+
+#eksctl create cluster --name us-west-2-lab --region us-west-2 --fargate
+eksctl create cluster -f /mnt/d/git/k8s/k8s-yamls/live/aws/eksctl-us-west-2-lab.yaml
+
+
+
+# Create OIDC IDP
+#    - --oidc-client-id=916d15d5-65f1-481e-9b1a-819c17b8414b
+#    - --oidc-groups-claim=groups
+#    - --oidc-issuer-url=https://sts.medimpact.com/adfs
+#    - --oidc-username-claim=username
+#    - '--oidc-username-prefix=oidc:'
+
+
+
+#eksctl create fargateprofile -f /mnt/d/git/k8s/k8s-yamls/live/aws/fargateprofiles.yaml
+
+
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/clusterroles/
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/podsecuritypolicy/ 
+
+
+
+
+
+
+mdeckert@vd1medsys0006:~$ aws ecr get-login-password --region us-west-2                                                                                                                                          eyJwYXlsb2FkIjoia01BYVdYcEVRNzRlbFoxZXJ5dis1d3diM3lFZWxPK1FDaGlVdXUxMjhuTjhXbHhFQ0h2UFl3c3d3c0dFd0tuY0VxVFBHSTMyNktHQ25PQ2lJcmRWSzBGWHBOd25qdjVVQzBsN3hPbFFISk1GUlIyOVN0WVFnc2tLU2VucFhiNUhBd0RpdjY0QXM3TmZuS21EeVRRNS9qWDdBNWNOOHFvYlBWN0llWEc1Yi84SDFjYnpZbWZnMFZTVDA0cS9XVTdnc003L1o4MzBLQVY2SE8yM0JXUjRQWTU2VW1WVW8yQTk2U2R1cTRkY2VKc0cvMUR5bjRJaGMrOWxwZ09kcmhrVExBd1hqRGF5Z2t5TVNCbW1mRFFmRTVSOGN1cVZCNW9Vb3U2R0IzZ2lXK3grTWk1NGlMcFdTY1J5OGJRVmZSblRIZnB1SmJJbTZvV21iek8wc0NHNHpUY3UzYXh5NUo0SW1MOXBWSHVVU1d6c3BEcnpOaDQ3aFVtb3p5RWRHRUx1VjhWWkNjYWdzak9vbFVZOVhDdFJ5TVliNDVEcTBrSHpYNEY5cHBHWlpvcDN2bDlFaUg3eE1udGVJZTl1SzY3TzhHRVdIYzFKNm5LM21NNVVDSmZsMElvVHEwVkdPRlhtV296TnZxb1dZcHN0cjJyZjI5WDBaV1BVOWdZdTRPWUFQcE92WlZHenJWbEF4enZoUjk2NlNQekYyRzNTaVptNW9RMFk1aGpacWNmMm03dFJZL0t2RkhuZU5mNVR2Ukpva2xlSSt5biszVVV2a2VleTcvOTZhbmExOHlIZzF0WlVWQUpvOHNhSHB1WlF3WVkwUGpzenFtRzkwT1ROZ1laNWovZTBoOHo1eFBQVVU3MU1PZ2JCWjdaWlRNZ1kwclVYMmZFUDVwUWVGTGljRVpRenlUU1RuL0tqU2R5MFl6ZUY5cjJ0SVJhZ1hIYkx2UzFyZWJMSCtPNGNqQ0ZWQWNLYUlvZmdySktPUjQ5Q3k4Z0w2VVNGRVgwRXovdmY1RWFRdVd5YjVURk1JSUZldmZiVFFPYUwrcWg0ckpiYjNtWGgreERIT2xmZ05DQ1VVNndVc0hTQjcrOXFQVTdXWmZKZ1dOQmhLN1lUU3lwcVhkbWUrQStwTjdlTEl0OGJycjJ1dkVxbkd3eE5jODl4ckNmamdERnpKS0hVbVZWbjBZSEdyU1ZkZkYwT1huNnZscEhXNWNMN1RjUmc2ZVVkMG54NWRORXRRNWlJcU9sYjFGZlhrMDBZWFpIRzVXRytzMDdvc1hzZnBwczYybURBdjhvK25obGNvdzZHRXdJWlhTT1p5bzArL2pjTExIOFpUdUVZK1A4NUU3ekVPUVU5Q0NLdWsvQWJlQlUvck50b281ZXlaYjlLMDFQcjVHWlJJNVlYSlE9PSIsImRhdGFrZXkiOiJBUUVCQUhqNmxjNFhJSncvN2xuMEhjMDBETWVrNkdFeEhDYlk0UklwVE1DSTU4SW5Vd0FBQUg0d2ZBWUpLb1pJaHZjTkFRY0dvRzh3YlFJQkFEQm9CZ2txaGtpRzl3MEJCd0V3SGdZSllJWklBV1VEQkFFdU1CRUVER0ZuYngrOE5qV0VNWWFkaUFJQkVJQTc3OXlZOG9KNENJYnJLb0JFaXVoMUErWUFKcDFIb0FvUnRQRnJRYXg2dmFhQzJiSm82R1psdS9jWjZCQ00xcDZka3hzaFJoL0Y5SkNPOWtRPSIsInZlcnNpb24iOiIyIiwidHlwZSI6IkRBVEFfS0VZIiwiZXhwaXJhdGlvbiI6MTYzNzE2NTcwOX0=
+
+
+[root@dv1medk8labtable1 dev]# docker login 241080764191.dkr.ecr.us-west-2.amazonaws.com
+Username: AWS
+Password:
+Login Succeeded
+
+
+skopeo copy docker://drydock.medimpact.com/simple-hello-www:1 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/simple-hello-www:1
+skopeo copy docker://drydock.medimpact.com/simple-hello-www:2 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/simple-hello-www:2
+skopeo copy docker://docker-local.artifactory.medimpact.com/systems/kube-webhook-certgen:v1.5.1 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/systems/kube-webhook-certgen:v1.5.1
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-root-config:1.3.49-build149 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-root-config:1.3.49-build149
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-auth:1.1.23 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-auth:1.1.23
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-ctp:1.3.355 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-ctp:1.3.355
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-dashboard:1.0.3 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-dashboard:1.0.3
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-ecs:2.8.3 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-ecs:2.8.3
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-eligibility:1.2.177 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-eligibility:1.2.177
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-layout:1.2.80 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-layout:1.2.80
+skopeo copy docker://docker-local.artifactory.medimpact.com/com/medimpact/lucida/lucida-mfe-style-guide:1.1.50 docker://241080764191.dkr.ecr.us-west-2.amazonaws.com/lucidapoc/lucida-mfe-style-guide:1.1.50
+
+
+
+
+curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.3.0/docs/install/iam_policy.json
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+    
+eksctl utils associate-iam-oidc-provider --region=us-west-2 --cluster=us-west-2-lab --approve
+    
+eksctl create iamserviceaccount \
+  --cluster=us-west-2-lab \
+  --region=us-west-2 \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::241080764191:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --approve
+    
+
+#Get the VPC ID first
+
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+kubectl config use-context us-west-2-lab
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=us-west-2-lab \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set watchNamespace=ingress-nginx
+  --set vpcId=<VPC ID Here>
+  
+  
+kubectl rollout status -n kube-system deploy/aws-load-balancer-controller
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/aws/namespaces/lucida-lab/
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/aws/lucida/
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/aws/nginx-ingress-controller/
+kubectl delete jobs -n ingress-nginx --all
+  
+cp .kube/config Downloads/kubeconfig
+
+  
+DELETE/CLEANUP
+
+kubectl get svc -A --context us-west-2-lab
+#delete any services that have an EXTERNAL-IP value
+kubectl delete svc -n ingress-nginx ingress-nginx-controller --context us-west-2-lab
+
+
+
+aws iam list-entities-for-policy --policy-arn arn:aws:iam::241080764191:policy/AWSLoadBalancerControllerIAMPolicy
+
+aws iam detach-role-policy --policy-arn arn:aws:iam::241080764191:policy/AWSLoadBalancerControllerIAMPolicy --role-name <RoleName from previous output>
+
+aws iam delete-policy --policy-arn arn:aws:iam::241080764191:policy/AWSLoadBalancerControllerIAMPolicy
+
+
+
+eksctl delete cluster --name us-west-2-lab --region us-west-2
+
+
+
+
+
+
+
+
+
+elig_add_grp/Password-5

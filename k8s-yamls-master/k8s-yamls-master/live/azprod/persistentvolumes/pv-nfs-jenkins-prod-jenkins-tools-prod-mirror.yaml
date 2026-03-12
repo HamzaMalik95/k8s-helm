@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.jenkins-prod.jenkins-tools-prod-mirror
+  labels: 
+    volname: jenkins-prod.jenkins-tools-prod-mirror
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.15.130.119
+    path: "/vol_pv1medvfiler4_devops_prod_jenkins_tools_prod_mirror/qtree_jenkins_tools_prod"

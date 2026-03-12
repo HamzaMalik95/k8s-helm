@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mmsp-uat
+  namespace: mms-uat
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10G
+  selector:
+    matchLabels:
+      volname: mms-uat.mmsp-uat

@@ -1,0 +1,25 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.dmp-prod.ppdl-prod-mirror
+  # annotations:
+    # volume.beta.kubernetes.io/mount-options: rsize=8192,wsize=8192,timeo=14,intr,vers=3
+  labels: 
+    volname: dmp-prod.ppdl-prod-mirror
+spec:
+  capacity:
+    storage: 19Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  # storageClassName: nfs
+  nfs:
+    server: 10.13.130.94
+    path: "/pv2medvfiler4_fme_production_dest/qtree_fme"

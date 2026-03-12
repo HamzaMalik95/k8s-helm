@@ -1,0 +1,866 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-contactpoints
+  namespace: monitoring
+data:
+  contactpoints.yaml: |-
+    apiVersion: 1
+    contactpoints:
+    - name: email-mark
+      org_id: 1
+      receivers:
+      - uid: email
+        type: email
+        is_default: false
+        send_reminder: false
+        frequency: 1h
+        disable_resolve_message: true
+        settings:
+          addresses: "mark.deckert@medimpact.com"
+          singleEmail: true
+          subject: |
+            {{ template "default.title" . }}
+          message: |
+            {{ template "default.message" . }}
+            
+      # Convert all the below to the receiver format
+      - name: email-gravitee-prod
+        type: email
+        uid: email-gravitee-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "venkat.kancherla@medimpact.com;santosh.dhuri@MedImpact.com;ty.hoffman@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-gravitee-nonprod
+        type: email
+        uid: email-gravitee-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "venkat.kancherla@medimpact.com;santosh.dhuri@MedImpact.com;ty.hoffman@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-ccs-nonprod
+        type: email
+        uid: email-ccs-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itcontactcentersolutions@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-ccs-prod
+        type: email
+        uid: email-ccs-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "it_oncall_medaccess@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-con-solns-nonprod
+        type: email
+        uid: email-con-solns-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITConsumerSolutions@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-con-solns-prod
+        type: email
+        uid: email-con-solns-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITConsumerSolutions@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-corpcomm-nonprod
+        type: email
+        uid: email-corpcomm-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "bryant.ke@medimpact.com;jie.ouyang@medimpact.com;joko.halim@medimpact.com;sourabh.bamrele@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-corpcomm-prod
+        type: email
+        uid: email-corpcomm-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "bryant.ke@medimpact.com;jie.ouyang@medimpact.com;joko.halim@medimpact.com;sourabh.bamrele@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-cts-nonprod
+        type: email
+        uid: email-cts-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itpadev@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-cts-prod
+        type: email
+        uid: email-cts-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itpadev@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-eas-nonprod
+        type: email
+        uid: email-eas-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "iteligibilityandaccumulationsolutions@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-eas-prod
+        type: email
+        uid: email-eas-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "iteligibilityandaccumulationsolutions@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-dmp-nonprod
+        type: email
+        uid: email-dmp-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itdrugmanagementsolutions@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-dmp-prod
+        type: email
+        uid: email-dmp-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itdrugmanagementsolutions@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-fmp-nonprod
+        type: email
+        uid: email-fmp-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itformularymanagementsolutions@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-fmp-prod
+        type: email
+        uid: email-fmp-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itformularymanagementsolutions@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-gps-nonprod
+        type: email
+        uid: email-gps-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itgpsengineering@medimpact.com;itmsdrpengineering@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-gps-prod
+        type: email
+        uid: email-gps-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itgpsengineering@medimpact.com;itmsdrpengineering@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-iam-nonprod
+        type: email
+        uid: email-iam-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "renuka.sethi@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-iam-prod
+        type: email
+        uid: email-iam-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "renuka.sethi@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-itapps-nonprod
+        type: email
+        uid: email-itapps-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITApplicationSupport@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-itapps-prod
+        type: email
+        uid: email-itapps-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITApplicationSupport@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-lucida-nonprod
+        type: email
+        uid: email-lucida-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "bryant.ke@medimpact.com;jie.ouyang@medimpact.com;sourabh.bamrele@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-lucida-prod
+        type: email
+        uid: email-lucida-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "bryant.ke@medimpact.com;jie.ouyang@medimpact.com;sourabh.bamrele@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-fxa-nonprod
+        type: email
+        uid: email-fxa-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itformularysharedservicessolutions@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-fxa-prod
+        type: email
+        uid: email-fxa-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itformularysharedservicessolutions@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pap-nonprod
+        type: email
+        uid: email-pap-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITPAGuidelinesEngineering@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pap-prod
+        type: email
+        uid: email-pap-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITPAGuidelinesEngineering@medimpact.com;mr3appsupport@medimpact.com;ITApplicationSupport@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pas-nonprod
+        type: email
+        uid: email-pas-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itpadev@medimpact.com;hemen.punjani@medimpact.com;chris.palmer@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pas-prod
+        type: email
+        uid: email-pas-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itpadev@medimpact.com;itconfigurationmanagement@medimpact.com;hemen.punjani@medimpact.com;chris.palmer@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pbmp-nonprod
+        type: email
+        uid: email-pbmp-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itformularysharedservicessolutions@medimpact.com;ITPAGuidelinesEngineering@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pbmp-prod
+        type: email
+        uid: email-pbmp-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itformularysharedservicessolutions@medimpact.com;ITPAGuidelinesEngineering@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-perf-enablement-nonprod
+        type: email
+        uid: email-perf-enablement-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "varun.kumaruduthala@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-perf-enablement-prod
+        type: email
+        uid: email-perf-enablement-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "varun.kumaruduthala@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pfwa-nonprod
+        type: email
+        uid: email-pfwa-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itmidasengineering@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pfwa-prod
+        type: email
+        uid: email-pfwa-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itmidasengineering@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pha-ntwk-nonprod
+        type: email
+        uid: email-pha-ntwk-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITPharmacyNetworksEngineering@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-pha-ntwk-prod
+        type: email
+        uid: email-pha-ntwk-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITPharmacyNetworksEngineering@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-ppas-nonprod
+        type: email
+        uid: email-ppas-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itposdevelopment@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-ppas-prod
+        type: email
+        uid: email-ppas-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itposdevelopment@medimpact.com;ITApplicationSupport@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-innovation-nonprod
+        type: email
+        uid: email-innovation-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "InnovationIT@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-innovation-prod
+        type: email
+        uid: email-innovation-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "InnovationIT@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-it-networks-nonprod
+        type: email
+        uid: email-it-networks-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "evan.goepfert@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-it-networks-prod
+        type: email
+        uid: email-it-networks-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "evan.goepfert@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-it-systems
+        type: email
+        uid: email-it-systems
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itse@medimpact.com"
+          singleEmail: true
+          
+      - name: email-it-systems-1d
+        type: email
+        uid: email-it-systems-1d
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 24h
+        disable_resolve_message: false
+        settings:
+          addresses: "itse@medimpact.com"
+          singleEmail: true
+          
+      - name: email-medresponse-nonprod
+        type: email
+        uid: email-medresponse-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "itpadev@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-medresponse-prod
+        type: email
+        uid: email-medresponse-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "itpadev@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-medadjust-nonprod
+        type: email
+        uid: email-medadjust-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITMedAdjust@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-medadjust-prod
+        type: email
+        uid: email-medadjust-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITMedAdjust@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-mcm-nonprod
+        type: email
+        uid: email-mcm-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITManualClaimEPPEngineering@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-mcm-prod
+        type: email
+        uid: email-mcm-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ITManualClaimEPPEngineering@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-portalteam-nonprod
+        type: email
+        uid: email-portalteam-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "bryant.ke@medimpact.com;jie.ouyang@medimpact.com;sourabh.bamrele@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-portalteam-prod
+        type: email
+        uid: email-portalteam-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "bryant.ke@medimpact.com;jie.ouyang@medimpact.com;sourabh.bamrele@medimpact.com;itconfigurationmanagement@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-posteam-nonprod
+        type: email
+        uid: email-posteam-nonprod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 6h
+        disable_resolve_message: false
+        settings:
+          addresses: "ty.hoffman@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true
+          
+      - name: email-posteam-prod
+        type: email
+        uid: email-posteam-prod
+        # either
+        #org_id: 1
+        # or
+        org_name: Main Org.
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        disable_resolve_message: false
+        settings:
+          addresses: "ty.hoffman@medimpact.com;mark.deckert@medimpact.com"
+          singleEmail: true

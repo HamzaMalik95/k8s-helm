@@ -1,0 +1,156 @@
+# Enable the custom CA preview
+az account set --subscription 6fedb444-f968-49de-b47e-1e02299c1c18
+az extension add --name aks-preview
+az extension update --name aks-preview
+az feature register --namespace "Microsoft.ContainerService" --name "CustomCATrustPreview"
+az feature show --namespace "Microsoft.ContainerService" --name "CustomCATrustPreview"
+# Wait until feature shows state: registered, (takes a long time) then:
+az provider register --namespace Microsoft.ContainerService
+
+# Create the resource group if it doesnt already exist
+az group create \
+    --name rg-aks-dev-westus2-001 \
+    --location westus2
+
+# Create the cluster
+az aks create \
+    --name aks-aks-dev-westus2-001 \
+    --resource-group rg-aks-dev-westus2-001 \
+    --location westus2 \
+    --dns-name-prefix aks-aks-dev-westus2-001 \
+    --kubernetes-version 1.25.11 \
+    --auto-upgrade-channel patch \
+    --node-resource-group rg-akspool-dev-westus2-001 \
+    --nodepool-name sysdev01 \
+    --vm-set-type VirtualMachineScaleSets \
+    --node-vm-size standard_d2s_v5 \
+    --generate-ssh-keys \
+    --kubelet-config git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/kubeletconfig.json \
+    --zones 1 2 3 \
+    --enable-cluster-autoscaler \
+    --node-count 3 \
+    --max-count 5 \
+    --min-count 3 \
+    --max-pods 60 \
+    --load-balancer-sku standard \
+    --outbound-type userAssignedNATGateway \
+    --network-plugin azure \
+    --network-policy calico \
+    --service-cidr 10.247.0.0/18 \
+    --dns-service-ip 10.247.0.10 \
+    --docker-bridge-address 172.17.0.1/16 \
+    --vnet-subnet-id '/subscriptions/6fedb444-f968-49de-b47e-1e02299c1c18/resourceGroups/rg-net-dev-westus2-001/providers/Microsoft.Network/virtualNetworks/vnet-net-dev-westus2-10.225.0.0_16/subnets/snet-aksnodes-dev-westus2-10.225.4.0_24' \
+    --pod-subnet-id '/subscriptions/6fedb444-f968-49de-b47e-1e02299c1c18/resourceGroups/rg-net-dev-westus2-001/providers/Microsoft.Network/virtualNetworks/vnet-net-dev-westus2-10.225.0.0_16/subnets/snet-aks-dev-westus2-10.225.192.0_18' \
+    --uptime-sla \
+    --enable-private-cluster \
+    --private-dns-zone none \
+    --enable-managed-identity \
+    --enable-aad \
+    --aad-tenant-id 9c02d424-0baa-4499-b49e-a06177b472dc \
+    --aad-admin-group-object-ids ea18e607-d963-4e9c-abdd-0cee3c39e573 \
+    --enable-addons azure-keyvault-secrets-provider \
+    --enable-oidc-issuer
+
+# Update cluster IAM permissions for LB management
+Use portal to add a role assignment for the kubernetes managed account to have "AKS Control Plane (MedImpact)" permissions in the target vnet.
+(The role has 2 permissions - "Get Virtual Network Subnet" and "Join Virtual Network")
+
+# Apply the containerd rebooter (for customer certs)
+az aks get-credentials --resource-group rg-aks-dev-westus2-001 --name aks-aks-dev-westus2-001
+kubectl apply -f git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/ds-install-mi-cacerts.yaml
+
+# Add a user node pool
+az aks nodepool add \
+    --name usrdev01 \
+    --resource-group rg-aks-dev-westus2-001 \
+    --cluster-name aks-aks-dev-westus2-001 \
+    --kubernetes-version 1.25.11 \
+    --node-vm-size standard_d4s_v5 \
+    --os-type Linux \
+    --kubelet-config git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/kubeletconfig.json \
+    --zones 1 2 3 \
+    --enable-cluster-autoscaler \
+    --node-count 2 \
+    --max-count 5 \
+    --min-count 2 \
+    --max-pods 60 \
+    --pod-subnet-id '/subscriptions/6fedb444-f968-49de-b47e-1e02299c1c18/resourceGroups/rg-net-dev-westus2-001/providers/Microsoft.Network/virtualNetworks/vnet-net-dev-westus2-10.225.0.0_16/subnets/snet-aks-dev-westus2-10.225.192.0_18' \
+    --mode user
+
+# Apply fluentd
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/fluentd
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/fluentd/clustername/aks-aks-dev-westus2-001
+
+# Apply the nginx ingresses
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/nginx-ingress-controller/
+kubectl get secret -n ingress-nginx --context cadev star-fullchain.medimpact.com.tls -oyaml|kubectl apply -f -
+
+# Get the ingress LB IPs and update the LB A records in azure.medimpact.com private zone
+kubectl get svc -n ingress-nginx
+
+# Apply monitoring stack
+kubectl replace -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/monitoring-new/setup/ --force
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/monitoring-new
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/monitoring-new/custom
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/monitoring-new/custom/aks-aks-dev-uswest2-001
+
+# Apply cluster roles
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/All-Clusters-BASE-REQUIRED/clusterroles/
+
+# Apply storage classes
+kubectl apply -f git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/storageclasses
+
+# Apply namespaces
+kubectl apply -R -f git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/namespaces/
+
+# Apply argocd namespace and serviceaccount
+kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/namespaces/argocd/
+kubectl -n argocd get secret argocd-token -o jsonpath='{.data.token}' | base64 --decode
+
+# Cleanup and delete everything
+az group delete --name rg-aks-dev-westus2-001
+    
+    
+    
+    # apply custom certs via a secret (this would require a containerd restart and also conflicts with loading them at boot apparently, so dont do this until MS spends months figuring out how to do extremely basic stuff probably with garbage C# code with an XML comnfig, that I did with a simple one line shell command above
+    kubectl apply -f /mnt/d/git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/custom-ca-trust-secret.yaml
+    
+    # Restart all nodes (if necessary to see the CA certs)
+    az vmss list|grep name|grep pool
+    az vmss restart --resource-group rg-akspool-dev-westus2-001 --name aks-syspool1-28697571-vmss --no-wait
+    az vmss restart --resource-group rg-akspool-dev-westus2-001 --name aks-userpool1-16142532-vmss --no-wait
+
+
+    
+    --enable-custom-ca-trust \
+    --custom-ca-trust-certificates git/k8s/k8s-yamls/live/aks-aks-dev-westus2-001/nodeCAtrust.pem \
+    --node-vm-size standard_d4s_v3 \ 4/16
+    --node-vm-size standard_d8s_v3 \ 8/32
+    --node-vm-size standard_d16s_v3 \ 16/64
+    --assign-identity <someidentity> \
+    --assign-kubelet-identity <someidentity> \
+    ###monitoring settings if added as an add-on
+    --workspace-resource-id <someid> \
+    --enable-msi-auth-for-monitoring \
+    --enable-syslog \
+    ###
+    --fqdn-subdomain ??? \
+    --yes \
+    --no-wait \
+    --disable-public-fqdn ????? \
+    --enable-keda \
+    --aad-client-app-id \
+    --aad-server-app-id \
+    --aad-server-app-secret \
+    --enable-blob-driver \
+    
+    
+    
+# Add azure kubelogin plugin and setup kubectl config
+az aks install-cli
+az login --use-device-code
+az account set --subscription 6fedb444-f968-49de-b47e-1e02299c1c18
+az aks get-credentials --resource-group rg-aks-dev-westus2-001 --name aks-aks-dev-westus2-001
+
+# ssh to an AKS node
+ssh azureuser@aks-sysdev01-25296498-vmss000002.azure.medimpact.com

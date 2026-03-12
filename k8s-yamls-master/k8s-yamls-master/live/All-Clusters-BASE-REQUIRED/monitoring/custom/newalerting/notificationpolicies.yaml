@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-notificationpolicies
+  namespace: monitoring
+data:
+  notificationpolicies.yaml: |-
+    apiVersion: 1
+    policies:
+      - orgId: 1
+        receiver: email-mark
+        # <list> The labels by which incoming alerts are grouped together. For example,
+        #        multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+        #        be batched into a single group.
+        #
+        #        To aggregate by all possible labels use the special value '...' as
+        #        the sole label name, for example:
+        #        group_by: ['...']
+        #        This effectively disables aggregation entirely, passing through all
+        #        alerts as-is. This is unlikely to be what you want, unless you have
+        #        a very low alert volume or your upstream notification system performs
+        #        its own grouping.
+        group_by: ['...']
+        # <list> a list of prometheus-like matchers that an alert rule has to fulfill to match the node (allowed chars
+        #        [a-zA-Z_:])
+        matchers:
+          - alertname = Watchdog
+          - service_id_X = serviceX
+          - severity =~ "warning|critical"
+        # <list> a list of grafana-like matchers that an alert rule has to fulfill to match the node
+        object_matchers:
+          - ['alertname', '=', 'CPUUsage']
+          - ['service_id-X', '=', 'serviceX']
+          - ['severity', '=~', 'warning|critical']
+        # <list> Times when the route should be muted. These must match the name of a
+        #        mute time interval.
+        #        Additionally, the root node cannot have any mute times.
+        #        When a route is muted it will not send any notifications, but
+        #        otherwise acts normally (including ending the route-matching process
+        #        if the `continue` option is not set)
+        mute_time_intervals:
+          - abc
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 4h

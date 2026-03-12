@@ -1,0 +1,22 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.mfs-prod.retrodur-mirror
+  labels: 
+    volname: mfs-prod.retrodur-mirror
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.13.130.94
+    path: "/vol_pv2medvfiler4_mfs_prod_retrodur_mirror/qtree_retrodur_prod"

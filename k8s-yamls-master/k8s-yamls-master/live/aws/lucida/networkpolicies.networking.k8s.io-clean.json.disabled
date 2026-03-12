@@ -1,0 +1,399 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-auth-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-mfe-auth"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-ctp-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-mfe-ctp"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-dashboard.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                }
+              },
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "app": "lucida-mfe-dashboard"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-ecs-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-mfe-ecs"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-elig-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-mfe-elig"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-layout-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-mfe-layout"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-mfe-styleguide-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-mfe-styleguide"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "annotations": {},
+        "name": "ingress.lucida-root-config-container.tcp8080",
+        "namespace": "lucida-lab"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "namespace": "ingress-nginx"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "ingress-nginx"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "tier": "frontend-root-config"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    }
+  ],
+  "kind": "List",
+  "metadata": {
+    "resourceVersion": "",
+    "selfLink": ""
+  }
+}

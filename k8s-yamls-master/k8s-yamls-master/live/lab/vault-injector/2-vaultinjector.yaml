@@ -1,0 +1,380 @@
+# Originally generated for the dev environment by Mark Deckert with helm using these options, then further hand modified to correct typical helm problems
+# helm template vault hashicorp/vault --set="injector.externalVaultAddr=https://vault-dev.medimpact.com:8200" --set="injector.enabled=true" --set "injector.replicas=3"
+---
+# Source: vault/templates/injector-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault-agent-injector
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: vault/templates/server-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault
+  namespace: vault-lab
+  labels:
+    helm.sh/chart: vault-0.15.0
+    app.kubernetes.io/name: vault
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: vault/templates/injector-certs-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-injector-certs
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: vault/templates/injector-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vault-agent-injector-clusterrole
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  verbs: 
+    - "get"
+    - "list"
+    - "watch"
+    - "patch"
+---
+# Source: vault/templates/injector-clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-agent-injector-binding
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: vault-agent-injector-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: vault-agent-injector
+  namespace: vault-lab
+---
+# Source: vault/templates/server-clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-server-binding
+  labels:
+    helm.sh/chart: vault-0.15.0
+    app.kubernetes.io/name: vault
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: vault
+  namespace: vault-lab
+---
+# Source: vault/templates/injector-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vault-agent-injector-leader-elector-role
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints", "secrets"]
+    verbs:
+      - "create"
+      - "get"
+      - "watch"
+      - "list"
+      - "update"
+---
+# Source: vault/templates/injector-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vault-agent-injector-leader-elector-binding
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: vault-agent-injector-leader-elector-role
+subjects:
+  - kind: ServiceAccount
+    name: vault-agent-injector
+    namespace: vault-lab
+---
+# Source: vault/templates/injector-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault-agent-injector-svc
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+  
+spec:
+  ports:
+  - name: https
+    port: 443
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    component: webhook
+---
+# Source: vault/templates/injector-deployment.yaml
+# Deployment for the injector
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-agent-injector
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+    component: webhook
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vault-agent-injector
+      app.kubernetes.io/instance: vault
+      component: webhook
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vault-agent-injector
+        app.kubernetes.io/instance: vault
+        component: webhook
+      
+    spec:
+      
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: vault-agent-injector
+                  app.kubernetes.io/instance: "vault"
+                  component: webhook
+              topologyKey: kubernetes.io/hostname
+  
+      
+      
+      serviceAccountName: "vault-agent-injector"
+      hostNetwork: false
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 1000
+        runAsUser: 100
+      containers:
+        - name: sidecar-injector
+          
+          image: "docker-local.artifactory.medimpact.com/dockerhub/hashicorp/vault-k8s:0.12.0"
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            allowPrivilegeEscalation: false
+          env:
+            - name: AGENT_INJECT_LISTEN
+              value: :8080
+            - name: AGENT_INJECT_LOG_LEVEL
+              value: info
+            - name: AGENT_INJECT_VAULT_ADDR
+              value: "https://vault-dev.medimpact.com:8200"
+            - name: AGENT_INJECT_VAULT_AUTH_PATH
+              value: auth/k8s-calab
+            - name: AGENT_INJECT_VAULT_IMAGE
+              value: "docker-local.artifactory.medimpact.com/dockerhub/hashicorp/vault:1.7.5"
+            - name: AGENT_INJECT_TLS_AUTO
+              value: vault-agent-injector-cfg
+            - name: AGENT_INJECT_TLS_AUTO_HOSTS
+              value: vault-agent-injector-svc,vault-agent-injector-svc.vault-lab,vault-agent-injector-svc.vault-lab.svc
+            - name: AGENT_INJECT_LOG_FORMAT
+              value: standard
+            - name: AGENT_INJECT_REVOKE_ON_SHUTDOWN
+              value: "true"
+            - name: AGENT_INJECT_USE_LEADER_ELECTOR
+              value: "true"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: AGENT_INJECT_CPU_REQUEST
+              value: "10m"
+            - name: AGENT_INJECT_CPU_LIMIT
+              value: "250m"
+            - name: AGENT_INJECT_MEM_REQUEST
+              value: "64Mi"
+            - name: AGENT_INJECT_MEM_LIMIT
+              value: "128Mi"
+            - name: AGENT_INJECT_DEFAULT_TEMPLATE
+              value: "map"
+            - name: AGENT_INJECT_TEMPLATE_CONFIG_EXIT_ON_RETRY_FAILURE
+              value: "false"
+            
+          args:
+            - agent-inject
+            - 2>&1
+          livenessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTPS
+            failureThreshold: 2
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTPS
+            failureThreshold: 2
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+        - name: leader-elector
+          image: docker-local.artifactory.medimpact.com/gcrio/google_containers/leader-elector:0.4
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - --election=vault-agent-injector-leader
+            - --election-namespace=vault-lab
+            - --http=0.0.0.0:4040
+            - --ttl=60s
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4040
+              scheme: HTTP
+            failureThreshold: 2
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4040
+              scheme: HTTP
+            failureThreshold: 2
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 5
+---
+# Source: vault/templates/injector-leader-endpoint.yaml
+# This is created here so it can be cleaned up easily, since if
+# the endpoint is left around the leader won't expire for about a minute.
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: vault-agent-injector-leader
+  namespace: vault-lab
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: vault/templates/injector-mutating-webhook.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: vault-agent-injector-cfg
+  labels:
+    app.kubernetes.io/name: vault-agent-injector
+    app.kubernetes.io/instance: vault
+    app.kubernetes.io/managed-by: Helm
+webhooks:
+  - name: vault.hashicorp.com
+    namespaceSelector:
+      matchExpressions:
+        - key: namespace
+          operator: NotIn
+          values: ["vault-lab","kube-system","gatekeeper-system","vmware-system-csi","ingress-nginx"]
+    sideEffects: None
+    admissionReviewVersions:
+    - "v1beta1"
+    - "v1"
+    clientConfig:
+      service:
+        name: vault-agent-injector-svc
+        namespace: vault-lab
+        path: "/mutate"
+      caBundle: ""
+    rules:
+      - operations: ["CREATE", "UPDATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    failurePolicy: Fail
+# ---
+# # Source: vault/templates/tests/server-test.yaml
+# apiVersion: v1
+# kind: Pod
+# metadata:
+  # name: "vault-server-test"
+  # namespace: vault-lab
+  # annotations:
+    # "helm.sh/hook": test
+# spec:
+  
+  # containers:
+    # - name: vault-server-test
+      # image: "docker-local.artifactory.medimpact.com/dockerhub/hashicorp/vault:1.7.5"
+      # imagePullPolicy: IfNotPresent
+      # env:
+        # - name: VAULT_ADDR
+          # value: "https://vault-dev.medimpact.com:8200"
+      # command:
+        # - /bin/sh
+        # - -c
+        # - |
+          # echo "Checking for sealed info in 'vault status' output"
+          # ATTEMPTS=10
+          # n=0
+          # until [ "$n" -ge $ATTEMPTS ]
+          # do
+            # echo "Attempt" $n...
+            # vault status -format yaml | grep -E '^sealed: (true|false)' && break
+            # n=$((n+1))
+            # sleep 5
+          # done
+          # if [ $n -ge $ATTEMPTS ]; then
+            # echo "timed out looking for sealed info in 'vault status' output"
+            # exit 1
+          # fi
+
+          # exit 0
+
+  # restartPolicy: Never

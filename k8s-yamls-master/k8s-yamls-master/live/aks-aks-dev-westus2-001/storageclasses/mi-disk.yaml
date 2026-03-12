@@ -1,0 +1,14 @@
+# Based on managed-csi-premium
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: mi-disk
+parameters:
+  skuname: Premium_LRS
+provisioner: disk.csi.azure.com
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

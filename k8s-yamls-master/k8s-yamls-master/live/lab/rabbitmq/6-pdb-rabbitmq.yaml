@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rabbitmq-itsys-001
+  namespace: itsystems-lab
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app: rabbitmq-itsys-001

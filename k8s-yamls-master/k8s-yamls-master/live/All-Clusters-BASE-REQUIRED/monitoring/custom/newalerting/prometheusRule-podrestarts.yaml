@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: podrestart-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: kube_container_restarts
+    rules:
+    - alert: HighContainerRestarts
+      expr: rate(kube_pod_container_status_restarts_total[10m]) * 600 > 0
+      # for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High rate of container restarts in {{ $labels.namespace }}"
+        description: "Namespace {{ $labels.namespace }} is experiencing a high rate of container restarts."

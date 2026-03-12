@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-zookeeper
+  namespace: pbmp-dev
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: kafka-zookeeper
+  serviceName: kafka-zookeeper-headless
+  template:
+    metadata:
+      labels:
+        app: kafka-zookeeper
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - kafka-zookeeper
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - name: zookeeper
+        env:
+        - name: ZK_ENV
+          value: dev
+        - name: ZK_REPLICAS
+          value: "3"
+        command: [ "/bin/bash", "-xec" ]
+        args:
+        - |
+          HOSTNAME="$(hostname)"
+          HOST_PREFIX="${HOSTNAME%-*}"
+          FQDN="$(hostname -f)"
+          FQDN_SUFFIX="${FQDN#*.}"
+          INDEX="${HOSTNAME##*-}"
+          MYID="$(($INDEX+1))"
+          echo "###### BEGIN - REMOVE THESE LINES AFTER UPGRADE ######"
+          mv /data/${ZK_ENV}/${HOSTNAME}/* /data||true
+          rm -rf /data/${ZK_ENV}||true
+          echo "###### END - REMOVE THESE LINES AFTER UPGRADE ######"
+          mkdir -p /data/data||true
+          echo $MYID > /data/data/myid
+          echo "clientPort=2181
+          dataDir=/data/data
+          dataLogDir=/data/log
+          tickTime=2000
+          initLimit=5
+          syncLimit=10
+          maxClientCnxns=60
+          minSessionTimeout=4000
+          maxSessionTimeout=40000
+          autopurge.snapRetainCount=3
+          autopurge.purgeInteval=0
+          4lw.commands.whitelist=stat, ruok
+          quorumListenOnAllIPs=true
+          #snapshot.trust.empty=true
+          " > /conf/zoo.cfg
+          for a in $(seq $ZK_REPLICAS);do
+            echo "server.$((0+$a))=${HOST_PREFIX}-$((-1+$a)).$FQDN_SUFFIX:2888:3888" >> /conf/zoo.cfg
+          done
+          zkServer.sh start-foreground
+        image: docker-local.artifactory.medimpact.com/dockerhub/zookeeper:3.8.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - if [ "$(timeout 5 sh -c "echo ruok|nc localhost 2181|grep 'imok'")" ];then 
+                exit 0;
+              else
+                exit 1;
+              fi
+          failureThreshold: 3
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        ports:
+        - containerPort: 2181
+          name: client
+          protocol: TCP
+        - containerPort: 3888
+          name: election
+          protocol: TCP
+        - containerPort: 2888
+          name: server
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - if [ "$(timeout 5 sh -c "echo ruok|nc localhost 2181|grep 'imok'")" ];then 
+                exit 0;
+              else
+                exit 1;
+              fi
+          failureThreshold: 3
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: "4"
+            memory: 2512Mi
+          requests:
+            cpu: 125m
+            memory: 395Mi
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: "itsystems-dev"
+        resources:
+          requests:
+            storage: 1Gi
+  updateStrategy:
+    type: RollingUpdate

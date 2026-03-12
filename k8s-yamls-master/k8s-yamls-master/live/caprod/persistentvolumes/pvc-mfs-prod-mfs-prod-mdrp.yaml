@@ -1,0 +1,16 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mfs-prod-mdrp
+  namespace: mfs-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  # storageClassName: nfs
+  selector:
+    matchLabels:
+      volname: mfs-prod.mfs-prod-mdrp

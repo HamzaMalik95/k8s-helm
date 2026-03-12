@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clmstore-prod
+  namespace: clm-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2.5T
+  selector:
+    matchLabels:
+      volname: clm-prod.clmstore-prod

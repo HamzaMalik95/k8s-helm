@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencve-celery-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opencve-celery-beat
+  template:
+    metadata:
+      labels:
+        app: opencve-celery-beat
+    spec:
+      containers:
+      - name: celery-beat
+        # image: docker-local.artifactory.medimpact.com/com.medimpact/itsec/opencve:1.4.1-mi0.0.1
+        image: docker-local.artifactory.medimpact.com/com.medimpact/itsec/opencve:1.4.1
+        imagePullPolicy: Always
+        args: ["celery-beat"]
+        envFrom:
+        - configMapRef:
+            name: opencve-env
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "400Mi"
+          requests:
+            cpu: "0"
+            memory: "300Mi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+      securityContext:
+        runAsUser: 10222
+        runAsGroup: 10222
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: config
+        configMap:
+          name: opencve-config
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+  # name: celery-beat
+# spec:
+  # selector:
+    # app: celery-beat
+  # ports:
+    # - protocol: TCP
+      # port: 80
+      # targetPort: 80

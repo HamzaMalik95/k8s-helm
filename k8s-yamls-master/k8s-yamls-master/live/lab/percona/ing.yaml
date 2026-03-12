@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: pmm
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: pmm-dev.medimpact.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /graph
+        backend:
+          service:
+            name: monitoring-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - pmm-dev.medimpact.com

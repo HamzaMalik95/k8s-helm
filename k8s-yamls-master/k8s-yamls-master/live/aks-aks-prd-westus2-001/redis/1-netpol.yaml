@@ -1,0 +1,91 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis.redis.tcp6379
+  namespace: itsystems-lab
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - port: 6379
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sentinel.sentinel.tcp26379
+  namespace: itsystems-lab
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: sentinel
+    ports:
+    - port: 26379
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: sentinel
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sentinel.redis.tcp6379
+  namespace: itsystems-lab
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: sentinel
+    ports:
+    - port: 6379
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+  - Ingress
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: any.sentinel.tcp26379
+  # namespace: itsystems-lab
+# spec:
+  # ingress:
+  # - ports:
+    # - port: 26379
+      # protocol: TCP
+  # podSelector:
+    # matchLabels:
+      # app: sentinel
+  # policyTypes:
+  # - Ingress
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: any.redis.tcp6379
+  # namespace: itsystems-lab
+# spec:
+  # ingress:
+  # - ports:
+    # - port: 6379
+      # protocol: TCP
+  # podSelector:
+    # matchLabels:
+      # app: redis
+  # policyTypes:
+  # - Ingress

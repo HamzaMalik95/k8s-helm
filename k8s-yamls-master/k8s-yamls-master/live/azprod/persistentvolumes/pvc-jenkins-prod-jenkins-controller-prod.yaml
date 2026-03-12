@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-controller-prod
+  namespace: jenkins-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 199Gi
+  selector:
+    matchLabels:
+      volname: jenkins-prod.jenkins-controller-prod

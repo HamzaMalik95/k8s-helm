@@ -1,0 +1,2274 @@
+---
+# Source: apim3/charts/apim/templates/common/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gio2-apim
+  annotations:
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: 3.20.11
+    app.kubernetes.io/component: "apim"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: apim3/charts/apim/templates/api/api-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim-api
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+data:
+  gravitee.yml: |
+
+    management:
+      url: https://apim.example.com/console/
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://graviteeio-apim-mongodb-replicaset-headless:27017/gravitee?&replicaSet=rs0&connectTimeoutMS=30000
+
+    console:
+      api:
+        url: "https://apim.example.com/management"
+      ui:
+        url: "https://apim.example.com/console"
+    services:
+      core:
+        http:
+          enabled: true
+          port: 18083
+          host: localhost
+          authentication:
+            type: basic
+            users:
+              admin: adminadmin
+    httpClient:
+      timeout: 10000
+    http:
+      api:
+        entrypoint: /
+        management:
+          entrypoint: ${http.api.entrypoint}management
+        portal:
+          entrypoint: ${http.api.entrypoint}portal
+
+    analytics:
+      type: elasticsearch
+      elasticsearch:
+        endpoints:
+          - http://graviteeio-apim-elasticsearch-data.default.svc.cluster.local:9200
+        index_mode: daily
+        index: gravitee
+    security:
+      trustAll: false
+      providers:
+        - type: gravitee
+        - type: memory
+          # password encoding/hashing algorithm. One of:
+          # - bcrypt : passwords are hashed with bcrypt
+          # - none : passwords are not hashed/encrypted
+          # default value is bcrypt
+          password-encoding-algo: bcrypt
+          allow-email-in-search-results: false
+          users:
+            - user:
+              username: admin
+              password: $2a$10$Ihk05VSds5rUSgMdsMVi9OKMIx2yUvMz7y9VP3rJmQeizZLrhLMyq
+              roles: ORGANIZATION:ADMIN, ENVIRONMENT:ADMIN
+              email: 
+              firstName: 
+              lastName: 
+            - user:
+              username: user
+              # Password value: password
+              password: $2a$10$9kjw/SH9gucCId3Lnt6EmuFreUAcXSZgpvAYuW2ISv7hSOhHRH1AO
+              roles: ORGANIZATION:USER, ENVIRONMENT:USER
+              # Useful to receive notifications
+              #email:
+              #firstName:
+              #lastName:
+            - user:
+              username: api1
+              # Password value: api1
+              password: $2a$10$iXdXO4wAYdhx2LOwijsp7.PsoAZQ05zEdHxbriIYCbtyo.y32LTji
+              # You can declare multiple roles using comma separator
+              roles: ORGANIZATION:USER, ENVIRONMENT:API_PUBLISHER
+              #email:
+              #firstName:
+              #lastName:
+            - user:
+              username: application1
+              # Password value: application1
+              password: $2a$10$2gtKPYRB9zaVaPcn5RBx/.3T.7SeZoDGs9GKqbo9G64fKyXFR1He.
+              roles: ORGANIZATION:USER, ENVIRONMENT:USER
+              #email:
+              #firstName:
+              #lastName:
+            
+    # SMTP configuration used to send mails
+    email:
+      enabled: true
+      host: smtp.example.com
+      subject: "[gravitee] %s"
+      port: 25
+      from: info@example.com
+      username: info@example.com
+      password: example.com
+      properties:
+        auth: true
+        starttls.enable: false
+    # SMTP configuration used to send notifications / alerts
+    notifiers:
+      email:
+        enabled: true
+        host: ${email.host}
+        subject: "${email.subject}"
+        port: ${email.port}
+        from: ${email.from}
+        username: ${email.username}
+        password: ${email.password}
+        starttls.enabled: false
+
+    # Mail templates
+    templates:
+      path: ${gravitee.home}/templates
+
+    jwt:
+      secret: myJWT4Gr4v1t33_S3cr3t
+
+    swagger:
+      # Default scheme used when creating an API from a Swagger descriptor if there is no scheme specified.
+      scheme: https
+
+    user:
+      login:
+        # Create a default application when user connects to the portal for the very first time (default true)
+        defaultApplication: true
+
+      creation:
+        # Allows to register new users from portal (default false)
+        #enabled: true
+        token:
+          #expire-after: 86400
+        anonymize-on-delete:
+          enabled: false
+    # The portal URL used in emails
+    portalURL: https://apim.example.com
+
+    # Allows to create support ticket (default value: false)
+    support:
+      enabled: true
+
+    # Allows to rate an API (default value: false)
+    rating :
+      enabled: true
+
+    # Set the Subscribe to newsletter feature (default value: true)
+    newsletter :
+      enabled: true
+
+    # Alert Engine communication
+    
+    alerts:
+      alert-engine-connector-ws:
+        enabled: false
+    # APIs specific configuration
+---
+# Source: apim3/charts/apim/templates/gateway/gateway-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim-gateway
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+data:
+  gravitee.yml: |
+    # Gateway HTTP server
+    http:
+      port: 8082
+      host: 0.0.0.0
+    #  idleTimeout: 0
+    #  tcpKeepAlive: true
+    #  compressionSupported: false
+    #  instances: 0
+      alpn: true
+      websocket:
+        enabled: false
+    management:
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://graviteeio-apim-mongodb-replicaset-headless:27017/gravitee?&replicaSet=rs0&connectTimeoutMS=30000
+
+    ratelimit:
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://graviteeio-apim-mongodb-replicaset-headless:27017/gravitee?&replicaSet=rs0&connectTimeoutMS=30000
+
+    cache:
+      type: ehcache
+      enabled: true
+
+    # Sharding tags configuration
+    # Allows to define inclusion/exclusion sharding tags to only deploy a part of APIs. To exclude just prefix the tag with '!'.
+    tags:   
+
+    # Multi-tenant configuration
+    # Allow only a single-value
+    tenant: 
+    
+    # Reporters configuration (used to store reporting monitoring data, request metrics, healthchecks and others...
+    # All reporters are enabled by default. To stop one of them, you have to add the property 'enabled: false'
+    reporters:
+      # Elasticsearch reporter
+      elasticsearch:
+        enabled: true
+        endpoints:
+          - http://graviteeio-apim-elasticsearch-data.default.svc.cluster.local:9200
+        index_mode: daily
+        pipeline:
+          plugins:
+            ingest: geoip, user_agent
+        index: gravitee
+        bulk:
+          actions: 1000           # Number of requests action before flush
+          flush_interval: 5       # Flush interval in seconds
+
+    services:
+      core:
+        http:
+          enabled: true
+          port: 18082
+          host: 0.0.0.0
+          authentication:
+            type: basic
+            users:
+              admin: adminadmin
+          secured: false
+
+      sync: 
+        cron: '*/5 * * * * *'
+
+      # Service used to store and cache api-keys from the management repository to avoid direct repository communication
+      # while serving requests.
+      apikeyscache:
+        delay: 10000
+        unit: MILLISECONDS
+        threads: 3 # Threads core size used to retrieve api-keys from repository.
+
+      # Local registry service.
+      # This registry is used to load API Definition with json format from the file system. By doing so, you do not need
+      # to configure your API using the web console or the rest API (but you need to know and understand the json descriptor
+      # format to make it work....)
+      local:
+        enabled: false
+        path: ${gravitee.home}/apis # The path to API descriptors
+
+      # Gateway monitoring service.
+      # This service retrieves metrics like os / process / jvm metrics and send them to an underlying reporting service.
+      monitoring:
+        delay: 5000
+        unit: MILLISECONDS
+
+      # Endpoint healthcheck service.
+      healthcheck:
+        threads: 3 # Threads core size used to check endpoint availability
+    policy:
+      api-key:
+        header: X-Gravitee-Api-Key
+        param: api-key
+    
+    # Alert Engine communication
+    alerts:
+      alert-engine-connector-ws:
+        enabled: false
+
+    # APIs specific configuration
+
+    gracefulShutdown:
+      delay: 0
+      unit: MILLISECONDS
+
+    # Old class loader behavior, false by default
+    classloader:
+      legacy:
+        enabled: false
+---
+# Source: apim3/charts/apim/templates/portal/portal-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim-portal
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+data:
+  use-gzip: "true"
+  gzip-level: "5"
+  gzip-types: "*"
+  config.json: |
+    {
+      "baseURL": "https://apim.example.com/portal/environments/DEFAULT",
+      "loaderURL": "assets/images/gravitee-loader.gif",
+      "pagination": {
+        "size": {
+          "default": 10,
+          "values": [5, 10, 25, 50, 100]
+        }
+      }
+    }
+---
+# Source: apim3/charts/apim/templates/ui/ui-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim-ui
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+data:
+  use-gzip: "true"
+  gzip-level: "5"
+  gzip-types: "*"
+  constants.json: |
+    {
+      "baseURL": "https://apim.example.com/management/organizations/DEFAULT/environments/DEFAULT/",
+      "management": {
+        "title": "API Management"
+      },
+      "company": {
+        "name": "Gravitee.io"
+      },
+      "documentation": {
+        "url": "http://docs.gravitee.io/"
+      },
+      "portal": {
+        "entrypoint": "https://apim.example.com/",
+        "title": "Management UI",
+        "analytics": {"enabled":false,"trackingId":""},
+        "apikeyHeader": "X-Gravitee-Api-Key",
+        "rating": {"enabled":false},
+        "support": {"enabled":true},
+        "userCreation": {"enabled":false}
+      },
+      "theme": {"loader":"assets/gravitee_logo_anim.gif","logo":"themes/assets/GRAVITEE_LOGO1-01.png","name":"default"},
+      "scheduler": {"tasks":10}
+    }
+---
+# Source: apim3/templates/api/api-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim3-api
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+data:
+  gravitee.yml: |
+
+    management:
+      url: https://gio-lab.medimpact.com/console/
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+
+    console:
+      api:
+        url: "https://gio-lab.medimpact.com/management"
+      ui:
+        url: "https://gio-lab.medimpact.com/console"
+    services:
+      core:
+        http:
+          enabled: true
+          port: 18083
+          host: localhost
+          authentication:
+            type: basic
+            users:
+              admin: adminadmin
+    httpClient:
+      timeout: 10000
+      proxy:
+        type: HTTP
+        http:
+          host: localhost
+          port: 3128
+        https:
+          host: localhost
+          port: 3128
+    http:
+      api:
+        entrypoint: /
+        management:
+          entrypoint: ${http.api.entrypoint}management
+        portal:
+          entrypoint: ${http.api.entrypoint}portal
+
+    analytics:
+      type: elasticsearch
+      elasticsearch:
+        endpoints:
+          - http://dv1medgravpoc1.medimpact.com:9200
+        index_mode: daily
+        index: gravitee
+    security:
+      trustAll: false
+      providers:
+        - type: gravitee
+        - type: memory
+          # password encoding/hashing algorithm. One of:
+          # - bcrypt : passwords are hashed with bcrypt
+          # - none : passwords are not hashed/encrypted
+          # default value is bcrypt
+          password-encoding-algo: bcrypt
+          allow-email-in-search-results: false
+          users:
+            - user:
+              username: admin
+              password: $2a$10$Ihk05VSds5rUSgMdsMVi9OKMIx2yUvMz7y9VP3rJmQeizZLrhLMyq
+              roles: ORGANIZATION:ADMIN, ENVIRONMENT:ADMIN
+              email: itmiddlewareadmins@medimpact.com
+              firstName: 
+              lastName: 
+            - user:
+              username: user
+              # Password value: password
+              password: $2a$10$9kjw/SH9gucCId3Lnt6EmuFreUAcXSZgpvAYuW2ISv7hSOhHRH1AO
+              roles: MANAGEMENT:USER, PORTAL:USER
+              # Useful to receive notifications
+              #email:
+              #firstName:
+              #lastName:
+            - user:
+              username: api1
+              # Password value: api1
+              password: $2a$10$iXdXO4wAYdhx2LOwijsp7.PsoAZQ05zEdHxbriIYCbtyo.y32LTji
+              # You can declare multiple roles using comma separator
+              roles: MANAGEMENT:API_PUBLISHER, PORTAL:API_PUBLISHER
+              #email:
+              #firstName:
+              #lastName:
+            - user:
+              username: application1
+              # Password value: application1
+              password: $2a$10$2gtKPYRB9zaVaPcn5RBx/.3T.7SeZoDGs9GKqbo9G64fKyXFR1He.
+              roles: MANAGEMENT:USER, PORTAL:USER
+              #email:
+              #firstName:
+              #lastName:
+            
+        - type: ldap
+          context:
+            username: "svcGraviteeDev@medimpact.com"
+            password: "shapooN0uf=eix&"
+            url: "ldap://ad.medimpact.com"
+            base: "dc=medimpact,dc=com"
+          authentication:
+            user: 
+              base: "ou=Users OU"
+              filter: "sAMAccountName={0}"
+              photo-attribute: "thumbnailPhoto"
+            group:
+              base: "ou=Secure Groups,ou=Groups OU" 
+              filter: "member={0}" 
+              role:
+                attribute: "sAMAccountName"
+                mapper: {
+                  Gravitee Nonprod Consumer: API_CONSUMER,
+                  Gravitee Nonprod Publisher: API_PUBLISHER,
+                  Gravitee Nonprod Admin: ADMIN,
+                  Gravitee Nonprod User: USER
+                }
+          lookup:
+            allow-email-in-search-results: false
+            user:
+              base: "ou=Users OU" 
+              filter: "(&(objectClass=person)(|(cn=*{0}*)(sAMAccountName={0})))"
+    # SMTP configuration used to send mails
+    email:
+      enabled: true
+      host: mx.medimpact.com
+      subject: "[gravitee] %s"
+      port: 25
+      from: gravitee-apim@medimpact.com
+      username: info@example.com
+      password: example.com
+      properties:
+        auth: false
+        starttls.enable: false
+        starttlsEnable: false
+    # SMTP configuration used to send notifications / alerts
+    notifiers:
+      email:
+        enabled: true
+        host: ${email.host}
+        subject: "${email.subject}"
+        port: ${email.port}
+        from: ${email.from}
+        username: ${email.username}
+        password: ${email.password}
+        starttls.enabled: false
+
+    # Mail templates
+    templates:
+      path: ${gravitee.home}/templates
+
+    jwt:
+      secret: myJWT4Gr4v1t33_S3cr3t
+
+    swagger:
+      # Default scheme used when creating an API from a Swagger descriptor if there is no scheme specified.
+      scheme: https
+
+    user:
+      login:
+        # Create a default application when user connects to the portal for the very first time (default true)
+        defaultApplication: false
+
+      creation:
+        # Allows to register new users from portal (default false)
+        #enabled: true
+        token:
+          #expire-after: 86400
+        anonymize-on-delete:
+          enabled: false
+    # The portal URL used in emails
+    portalURL: https://gio-lab.medimpact.com
+
+    # Allows to create support ticket (default value: false)
+    support:
+      enabled: true
+
+    # Allows to rate an API (default value: false)
+    rating :
+      enabled: true
+
+    # Set the Subscribe to newsletter feature (default value: true)
+    newsletter :
+      enabled: true
+
+    # Alert Engine communication
+    
+    alerts:
+      alert-engine-connector-ws:
+        enabled: false
+    # APIs specific configuration
+---
+# Source: apim3/templates/gateway/gateway-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim3-gateway
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+data:
+  gravitee.yml: |
+    # Gateway HTTP server
+    http:
+      port: 8082
+      host: 0.0.0.0
+    #  idleTimeout: 0
+    #  tcpKeepAlive: true
+    #  compressionSupported: false
+    #  instances: 0
+      alpn: true
+      websocket:
+        enabled: false
+    management:
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+
+    ratelimit:
+      type: mongodb
+      mongodb:
+        sslEnabled: false
+        socketKeepAlive: false
+        uri: mongodb://dv1medgravpoc1.medimpact.com:27017,dv1medgravpoc2.medimpact.com:27017,dv1medgravpoc3.medimpact.com:27017/gravitee?&connectTimeoutMS=30000&replicaSet=rs0&retryWrites=true&w=majority
+
+    cache:
+      type: ehcache
+      enabled: true
+
+    # Sharding tags configuration
+    # Allows to define inclusion/exclusion sharding tags to only deploy a part of APIs. To exclude just prefix the tag with '!'.
+    tags:   
+
+    # Multi-tenant configuration
+    # Allow only a single-value
+    tenant: 
+    
+    # Reporters configuration (used to store reporting monitoring data, request metrics, healthchecks and others...
+    # All reporters are enabled by default. To stop one of them, you have to add the property 'enabled: false'
+    reporters:
+      # Elasticsearch reporter
+      elasticsearch:
+        enabled: true
+        endpoints:
+          - http://dv1medgravpoc1.medimpact.com:9200
+        index_mode: daily
+        pipeline:
+          plugins:
+            ingest: geoip, user_agent
+        index: gravitee
+        bulk:
+          actions: 1000           # Number of requests action before flush
+          flush_interval: 5       # Flush interval in seconds
+
+    services:
+      core:
+        http:
+          enabled: true
+          port: 18082
+          host: 0.0.0.0
+          authentication:
+            type: basic
+            users:
+              admin: adminadmin
+          secured: false
+
+      sync: 
+        cron: '*/5 * * * * *'
+
+      # Service used to store and cache api-keys from the management repository to avoid direct repository communication
+      # while serving requests.
+      apikeyscache:
+        delay: 10000
+        unit: MILLISECONDS
+        threads: 3 # Threads core size used to retrieve api-keys from repository.
+
+      # Local registry service.
+      # This registry is used to load API Definition with json format from the file system. By doing so, you do not need
+      # to configure your API using the web console or the rest API (but you need to know and understand the json descriptor
+      # format to make it work....)
+      local:
+        enabled: false
+        path: ${gravitee.home}/apis # The path to API descriptors
+
+      # Gateway monitoring service.
+      # This service retrieves metrics like os / process / jvm metrics and send them to an underlying reporting service.
+      monitoring:
+        delay: 5000
+        unit: MILLISECONDS
+
+      # Endpoint healthcheck service.
+      healthcheck:
+        threads: 3 # Threads core size used to check endpoint availability
+    policy:
+      api-key:
+        header: X-Api-Key
+        param: api-key
+    
+    # Alert Engine communication
+    alerts:
+      alert-engine-connector-ws:
+        enabled: false
+
+    # APIs specific configuration
+
+    gracefulShutdown:
+      delay: 0
+      unit: MILLISECONDS
+
+    # Old class loader behavior, false by default
+    classloader:
+      legacy:
+        enabled: false
+---
+# Source: apim3/templates/portal/portal-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim3-portal
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+data:
+  use-gzip: "true"
+  gzip-level: "5"
+  gzip-types: "*"
+  config.json: |
+    {
+      "baseURL": "https://gio-lab.medimpact.com/portal/environments/DEFAULT",
+      "loaderURL": "assets/images/gravitee-loader.gif",
+      "pagination": {
+        "size": {
+          "default": 10,
+          "values": [5, 10, 25, 50, 100]
+        }
+      }
+    }
+---
+# Source: apim3/templates/ui/ui-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gio2-apim3-ui
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+data:
+  use-gzip: "true"
+  gzip-level: "5"
+  gzip-types: "*"
+  constants.json: |
+    {
+      "baseURL": "https://gio-lab.medimpact.com/management/organizations/DEFAULT/environments/DEFAULT/",
+      "management": {
+        "title": "API Management"
+      },
+      "company": {
+        "name": "Gravitee.io"
+      },
+      "documentation": {
+        "url": "http://docs.gravitee.io/"
+      },
+      "portal": {
+        "entrypoint": "https://api-lab.medimpact.com/",
+        "title": "API Portal",
+        "analytics": {"enabled":false,"trackingId":""},
+        "apikeyHeader": "X-Api-Key",
+        "devMode": {"enabled":false},
+        "rating": {"enabled":false},
+        "support": {"enabled":true},
+        "userCreation": {"enabled":true}
+      },
+      "theme": {"loader":"assets/gravitee_logo_anim.gif","logo":"themes/assets/GRAVITEE_LOGO1-01.png","name":"default"},
+      "scheduler": {"tasks":10}
+    }
+---
+# Source: apim3/charts/apim/templates/common/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gio2-apim-role
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: 3.20.11
+    app.kubernetes.io/component: "apim"
+    app.kubernetes.io/managed-by: Helm
+rules: 
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - secrets
+    verbs:
+    - get
+    - list
+    - watch
+---
+# Source: apim3/charts/apim/templates/common/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gio2-apim-role-binding
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: 3.20.11
+    app.kubernetes.io/component: "apim"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+roleRef:
+  kind: Role
+  name: gio2-apim-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: gio2-apim
+  namespace: gravitee-lab
+---
+# Source: apim3/charts/apim/templates/api/api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim-api
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 83
+      targetPort: 8083
+      protocol: TCP
+      
+      
+      appProtocol: http
+      
+      
+      name: api
+  selector:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "api"
+---
+# Source: apim3/charts/apim/templates/gateway/gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim-gateway
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 82
+      targetPort: 8082
+      protocol: TCP
+      
+      appProtocol: http
+      
+      name: gateway
+  selector:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "gateway"
+---
+# Source: apim3/charts/apim/templates/portal/portal-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim-portal
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 8003
+      targetPort: 8080
+      protocol: TCP
+      
+      appProtocol: http
+      
+      name: portal
+  selector:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "portal"
+---
+# Source: apim3/charts/apim/templates/ui/ui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim-ui
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 8002
+      targetPort: 8080
+      protocol: TCP
+      
+      appProtocol: http
+      
+      name: ui
+  selector:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "ui"
+---
+# Source: apim3/templates/api/api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim3-api
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 83
+      targetPort: 8083
+      protocol: TCP
+      
+      
+      appProtocol: http
+      
+      
+      name: api
+  selector:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "api"
+---
+# Source: apim3/templates/gateway/gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim3-gateway
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 82
+      targetPort: 8082
+      protocol: TCP
+      
+      appProtocol: http
+      
+      name: gateway
+  selector:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "gateway"
+---
+# Source: apim3/templates/portal/portal-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim3-portal
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 8003
+      targetPort: 8080
+      protocol: TCP
+      
+      appProtocol: http
+      
+      name: portal
+  selector:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "portal"
+---
+# Source: apim3/templates/ui/ui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gio2-apim3-ui
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 8002
+      targetPort: 8080
+      protocol: TCP
+      
+      appProtocol: http
+      
+      name: ui
+  selector:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/component: "ui"
+---
+# Source: apim3/charts/apim/templates/api/api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim-api
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "api"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 44880def80394fb5e3774d81dfed99dfbdec46522e7c773047b4992de78643c6
+      labels:
+        app.kubernetes.io/name: apim
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.11"
+        app.kubernetes.io/component: "api"
+    spec:
+      serviceAccountName: gio2-apim
+      
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      initContainers:        
+      containers:
+        - name: gio2-apim-api
+          image: "graviteeio/apim-management-api:3.20.11"
+          imagePullPolicy: Always
+          securityContext: 
+            runAsNonRoot: true
+            runAsUser: 1001
+          ports:
+            - name: http
+              containerPort: 8083
+            - name: api-techapi
+              containerPort: 18083
+          env:
+            - name: portal.entrypoint
+              value: "https://apim.example.com/"
+          envFrom: 
+            []
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            tcpSocket:
+              port: http
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            tcpSocket:
+              port: http
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            tcpSocket:
+              port: http
+
+          resources: 
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /opt/graviteeio-management-api/config/gravitee.yml
+              subPath: gravitee.yml            
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim-api
+---
+# Source: apim3/charts/apim/templates/gateway/gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim-gateway
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "gateway"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: aaaa0723fecae9e3415e6179afdb2780f2740530f52bcf4440683872f42a11ca
+      labels:
+        app.kubernetes.io/name: apim
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.11"
+        app.kubernetes.io/component: "gateway"
+    spec:
+      serviceAccountName: gio2-apim
+      
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      initContainers:        
+      containers:
+        - name: gio2-apim-gateway
+          image: "graviteeio/apim-gateway:3.20.11"
+          imagePullPolicy: Always
+          securityContext: 
+            runAsNonRoot: true
+            runAsUser: 1001
+          ports:
+            - name: http
+              containerPort: 8082
+            - name: gateway-techapi
+              containerPort: 18082
+          env:
+          envFrom: 
+            []
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              httpHeaders:
+              - name: Authorization
+                value: Basic YWRtaW46YWRtaW5hZG1pbg==
+              path: /_node/health?probes=http-server
+              port: 18082
+              scheme: HTTP
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 2
+            httpGet:
+              httpHeaders:
+              - name: Authorization
+                value: Basic YWRtaW46YWRtaW5hZG1pbg==
+              path: /_node/health?probes=api-sync
+              port: 18082
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          startupProbe:
+            failureThreshold: 29
+            httpGet:
+              httpHeaders:
+              - name: Authorization
+                value: Basic YWRtaW46YWRtaW5hZG1pbg==
+              path: /_node/health?probes=http-server
+              port: 18082
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: 
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - name: config
+              mountPath: /opt/graviteeio-gateway/config/gravitee.yml
+              subPath: gravitee.yml            
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim-gateway
+---
+# Source: apim3/charts/apim/templates/portal/portal-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim-portal
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "portal"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: b8d3714603d88cf73a43c4282db4105cbd85354e2f48ca0cbad06445069c995d
+      labels:
+        app.kubernetes.io/name: apim
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.11"
+        app.kubernetes.io/component: "portal"
+    spec:
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: gio2-apim-portal
+          image: "graviteeio/apim-portal-ui:3.20.11"
+          imagePullPolicy: Always
+          securityContext: 
+            runAsGroup: 101
+            runAsNonRoot: true
+            runAsUser: 101
+          env:
+            - name: PORTAL_API_URL
+              value: "https://apim.example.com/portal/"
+            - name: PORTAL_BASE_HREF
+              value: /
+          envFrom: 
+            []
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources: 
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/assets/config.json
+              subPath: config.json
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim-portal
+---
+# Source: apim3/charts/apim/templates/ui/ui-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim-ui
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "ui"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: c3e6e83924fbdf8cd377cf4bf544e796d29898126c6dacc710d5a200c07ba5c6
+      labels:
+        app.kubernetes.io/name: apim
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.11"
+        app.kubernetes.io/component: "ui"
+    spec:
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: gio2-apim-ui
+          image: "graviteeio/apim-management-ui:3.20.11"
+          imagePullPolicy: Always
+          securityContext: 
+            runAsGroup: 101
+            runAsNonRoot: true
+            runAsUser: 101
+          env:
+            - name: MGMT_API_URL
+              value: "https://apim.example.com/management/"
+            - name: CONSOLE_BASE_HREF
+              value: /console/
+          envFrom: 
+            []
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/constants.json
+              subPath: constants.json
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim-ui
+---
+# Source: apim3/templates/api/api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim3-api
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  replicas: 3
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim3
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "api"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 39d5ecac209b0e5d7982c6b818923e3184b88e8843d1578ec6375e0e3f94a876
+      labels:
+        app.kubernetes.io/name: apim3
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.10-mi1.0.34"
+        app.kubernetes.io/component: "api"
+    spec:
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      initContainers:        
+      containers:
+        - name: gio2-apim3-api
+          image: "docker-local.artifactory.medimpact.com/graviteeio/apim-management-api:3.20.10-mi1.0.34"
+          imagePullPolicy: IfNotPresent
+          securityContext: 
+            runAsNonRoot: true
+            runAsUser: 1001
+          ports:
+            - name: http
+              containerPort: 8083
+            - name: api-techapi
+              containerPort: 18083
+          env:
+            - name: portal.entrypoint
+              value: "https://api-lab.medimpact.com/"
+            - name: gravitee_jwt_cookie-domain
+              value: gio-lab.medimpact.com
+            - name: JAVA_OPTS
+              value: -Djavax.net.ssl.trustStore=/opt/graviteeio-management-api/certs/cacerts -Djavax.net.ssl.trustStorePassword=changeit
+          envFrom: 
+            []
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","sleep 10"]
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            tcpSocket:
+              port: http
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            tcpSocket:
+              port: http
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            tcpSocket:
+              port: http
+
+          resources: 
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+            requests:
+              cpu: 150m
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /opt/graviteeio-management-api/config/gravitee.yml
+              subPath: gravitee.yml            
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim3-api
+---
+# Source: apim3/templates/gateway/gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim3-gateway
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim3
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "gateway"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 9edfff3fe764cf049a5adff2f2e69a8672298095ab1855314411fc0060e79a7f
+      labels:
+        app.kubernetes.io/name: apim3
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.10-mi1.0.34"
+        app.kubernetes.io/component: "gateway"
+    spec:
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      initContainers:        
+      containers:
+        - name: gio2-apim3-gateway
+          image: "docker-local.artifactory.medimpact.com/graviteeio/apim-gateway:3.20.10-mi1.0.34"
+          imagePullPolicy: IfNotPresent
+          securityContext: 
+            runAsNonRoot: true
+            runAsUser: 1001
+          ports:
+            - name: http
+              containerPort: 8082
+            - name: gateway-techapi
+              containerPort: 18082
+          env:
+            - name: gravitee_reporters_file_enabled
+              value: "false"
+            - name: JAVA_OPTS
+              value: -Djavax.net.ssl.trustStore=/opt/graviteeio-gateway/certs/cacerts -Djavax.net.ssl.trustStorePassword=changeit
+            - name: GIO_MIN_MEM
+              value: 2048m
+            - name: GIO_MAX_MEM
+              value: 2048m
+          envFrom: 
+            []
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","sleep 10"]
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              httpHeaders:
+              - name: Authorization
+                value: Basic YWRtaW46YWRtaW5hZG1pbg==
+              path: /_node/health?probes=http-server
+              port: 18082
+              scheme: HTTP
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 2
+            httpGet:
+              httpHeaders:
+              - name: Authorization
+                value: Basic YWRtaW46YWRtaW5hZG1pbg==
+              path: /_node/health?probes=api-sync
+              port: 18082
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          startupProbe:
+            failureThreshold: 29
+            httpGet:
+              httpHeaders:
+              - name: Authorization
+                value: Basic YWRtaW46YWRtaW5hZG1pbg==
+              path: /_node/health?probes=http-server
+              port: 18082
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: 
+            limits:
+              cpu: 2000m
+              memory: 3Gi
+            requests:
+              cpu: 100m
+              memory: 2Gi
+          volumeMounts:
+            - name: config
+              mountPath: /opt/graviteeio-gateway/config/gravitee.yml
+              subPath: gravitee.yml            
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim3-gateway
+---
+# Source: apim3/templates/portal/portal-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim3-portal
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  replicas: 3
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim3
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "portal"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: e6ae6fdb8e621f911baf5f2aa7bdc436d9c91967d0f2d8e1a7963132793d5881
+      labels:
+        app.kubernetes.io/name: apim3
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.10"
+        app.kubernetes.io/component: "portal"
+    spec:
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: gio2-apim3-portal
+          image: "docker-local.artifactory.medimpact.com/graviteeio/apim-portal-ui:3.20.10"
+          imagePullPolicy: IfNotPresent
+          securityContext: 
+            runAsGroup: 101
+            runAsNonRoot: true
+            runAsUser: 101
+          env:
+            - name: PORTAL_API_URL
+              value: "https://gio-lab.medimpact.com/portal/"
+            - name: PORTAL_BASE_HREF
+              value: /
+          envFrom: 
+            []
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources: 
+            limits:
+              cpu: 1000m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/assets/config.json
+              subPath: config.json
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim3-portal
+---
+# Source: apim3/templates/ui/ui-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gio2-apim3-ui
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+spec:
+  replicas: 3
+  strategy: 
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apim3
+      app.kubernetes.io/instance: gio2
+      app.kubernetes.io/component: "ui"
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "false"
+        checksum/config: 45083c6afaff54c654b5cf003533b83a0b72dec01876a1d05634eea3e2738257
+      labels:
+        app.kubernetes.io/name: apim3
+        app.kubernetes.io/instance: gio2
+        app.kubernetes.io/version: "3.20.10"
+        app.kubernetes.io/component: "ui"
+    spec:
+      affinity: 
+        {}
+      nodeSelector: 
+        {}
+      topologySpreadConstraints: 
+        []
+      tolerations: 
+        []
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: gio2-apim3-ui
+          image: "docker-local.artifactory.medimpact.com/graviteeio/apim-management-ui:3.20.10"
+          imagePullPolicy: IfNotPresent
+          securityContext: 
+            runAsGroup: 101
+            runAsNonRoot: true
+            runAsUser: 101
+          env:
+            - name: MGMT_API_URL
+              value: "https://gio-lab.medimpact.com/management/"
+            - name: CONSOLE_BASE_HREF
+              value: /console/
+          envFrom: 
+            []
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/constants.json
+              subPath: constants.json
+      volumes:
+        - name: config
+          configMap:
+            name: gio2-apim3-ui
+---
+# Source: apim3/charts/apim/templates/api/api-autoscaler.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gio2-apim-api
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gio2-apim-api
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+      
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+# Source: apim3/charts/apim/templates/gateway/gateway-autoscaler.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gio2-apim-gateway
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gio2-apim-gateway
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+      
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+# Source: apim3/charts/apim/templates/portal/portal-autoscaler.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gio2-apim-portal
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gio2-apim-portal
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+      
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+# Source: apim3/charts/apim/templates/ui/ui-autoscaler.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gio2-apim-ui
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gio2-apim-ui
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+      
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+# Source: apim3/charts/apim/templates/api/api-ingress-management.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim-api-management
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_pass_header if-match;\n"
+spec:
+  rules:
+  - host: apim.example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /management
+        backend:
+          service:
+            name: gio2-apim-api
+            port:
+              number: 83
+---
+# Source: apim3/charts/apim/templates/api/api-ingress-portal.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim-api-portal
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_set_header if-match \"\";\n"
+spec:
+  rules:
+  - host: apim.example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /portal
+        backend:
+          service:
+            name: gio2-apim-api
+            port:
+              number: 83
+---
+# Source: apim3/charts/apim/templates/gateway/gateway-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim-gateway
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "gateway"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: apim.example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: gio2-apim-gateway
+            port:
+              number: 82
+---
+# Source: apim3/charts/apim/templates/portal/portal-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim-portal
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\n"
+spec:
+  rules:
+  - host: apim.example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: gio2-apim-portal
+            port:
+              number: 8003
+---
+# Source: apim3/charts/apim/templates/ui/ui-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim-ui
+  labels:
+    app.kubernetes.io/name: apim
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.11"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\n"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+spec:
+  rules:
+  - host: apim.example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /console(/.*)?
+        backend:
+          service:
+            name: gio2-apim-ui
+            port:
+              number: 8002
+---
+# Source: apim3/templates/api/api-ingress-management.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim3-api-management
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_pass_header if-match;\n"
+spec:
+  rules:
+  - host: gio-lab.medimpact.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /management
+        backend:
+          service:
+            name: gio2-apim3-api
+            port:
+              number: 83
+          
+  tls:
+    - hosts:
+      - gio-lab.medimpact.com
+---
+# Source: apim3/templates/api/api-ingress-portal.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim3-api-portal
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10-mi1.0.34"
+    app.kubernetes.io/component: "api"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nproxy_set_header if-match \"\";\n"
+spec:
+  rules:
+  - host: gio-lab.medimpact.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /portal
+        backend:
+          service:
+            name: gio2-apim3-api
+            port:
+              number: 83
+          
+  tls:
+    - hosts:
+      - gio-lab.medimpact.com
+---
+# Source: apim3/templates/portal/portal-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim3-portal
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "portal"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\n"
+spec:
+  rules:
+  - host: gio-lab.medimpact.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: gio2-apim3-portal
+            port:
+              number: 8003
+          
+  tls:
+    - hosts:
+      - gio-lab.medimpact.com
+---
+# Source: apim3/templates/ui/ui-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gio2-apim3-ui
+  labels:
+    app.kubernetes.io/name: apim3
+    app.kubernetes.io/instance: gio2
+    app.kubernetes.io/version: "3.20.10"
+    app.kubernetes.io/component: "ui"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: apim3-3.20.11
+  annotations:
+    
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: "etag on;\nproxy_pass_header ETag;\nsub_filter_once on;\nsub_filter  '<base href=\"/' '<base href=\"/console/';"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1$2"
+spec:
+  rules:
+  - host: gio-lab.medimpact.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /console(/|$)(.*)
+        backend:
+          service:
+            name: gio2-apim3-ui
+            port:
+              number: 8002
+          
+  tls:
+    - hosts:
+      - gio-lab.medimpact.com

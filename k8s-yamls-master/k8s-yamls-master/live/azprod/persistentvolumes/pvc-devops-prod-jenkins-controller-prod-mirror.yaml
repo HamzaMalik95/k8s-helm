@@ -1,0 +1,15 @@
+# Filename pvc-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-controller-prod-mirror
+  namespace: devops-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 199Gi
+  selector:
+    matchLabels:
+      volname: devops-prod.jenkins-controller-prod-mirror

@@ -1,0 +1,55 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: us-west-2-lab
+  region: us-west-2
+fargateProfiles:
+  # - name: fp-default
+    # selectors:
+      # - namespace: default
+      # - namespace: kube-system
+  - name: fp-system
+    selectors:
+      - namespace: kube-system
+      - namespace: ingress-nginx
+      - namespace: monitoring
+  - name: fp-poc
+    selectors:
+      - namespace: lucida-lab
+      - namespace: drupal-lab
+identityProviders:
+  - name: MI-ADFS
+    issuerURL: https://sts.medimpact.com/adfs
+    clientID: 916d15d5-65f1-481e-9b1a-819c17b8414b
+    usernameClaim: username
+    usernamePrefix: "oidc:"
+    groupsClaim: groups
+    type: oidc
+vpc:
+  clusterEndpoints:
+    publicAccess:  true
+    privateAccess: true
+  # nat:
+    # gateway: HighlyAvailable
+  publicAccessCIDRs: ["198.54.236.76/32", "198.54.236.4/32", "208.91.228.4/32"]
+# nodeGroups:
+  # - name: ng1-public
+    # instanceType: m5.xlarge
+    # instanceName: custom-node-name
+    # desiredCapacity: 1
+    # minSize: 1
+    # maxSize: 5
+    # volumeSize: 50
+    # availabilityZones: ["us-west-1a", "us-west-1b", "us-west-1c"]
+    # ssh: # import inline public key
+      # publicKey: "ssh-rsa blahblahblah long string"
+  # - name: ng2-private
+    # instanceType: m5.large
+    # desiredCapacity: 10
+    # privateNetworking: true
+# cloudWatch:
+    # clusterLogging:
+        # # enable specific types of cluster control plane logs
+        # enableTypes: ["audit", "authenticator", "controllerManager"]
+        # # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+        # # supported special values: "*" and "all"

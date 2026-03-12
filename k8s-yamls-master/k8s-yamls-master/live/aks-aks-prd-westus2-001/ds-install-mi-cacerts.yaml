@@ -1,0 +1,277 @@
+apiVersion: v1
+kind: Secret
+metadata: 
+    name: install-mi-cacerts
+    namespace: kube-system
+type: Opaque
+stringData:
+  setup.sh: |
+    echo "$MEDIMPACT_INTERMEDIATE_1" > /usr/local/share/ca-certificates/medimpact-intermediate-1.crt && echo "$MEDIMPACT_INTERMEDIATE_2" > /usr/local/share/ca-certificates/medimpact-intermediate-2.crt && echo "$MEDIMPACT_SUBCA1_2019" > /usr/local/share/ca-certificates/medimpact-subca1-2019.crt && echo "$MEDIMPACT_SUBCA2_2019" > /usr/local/share/ca-certificates/medimpact-subca2-2019.crt && echo "$MEDIMPACT_ROOT" > /usr/local/share/ca-certificates/medimpact-root.crt && update-ca-certificates && systemctl restart containerd
+  medimpact-intermediate-1.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIHXDCCBUSgAwIBAgIKYQ7+SwABAAAABzANBgkqhkiG9w0BAQsFADAvMS0wKwYD
+    VQQDEyRNZWRJbXBhY3QgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwHhcNMTYw
+    NTMxMjE1MzAxWhcNMjEwNTMxMjIwMzAxWjBaMRMwEQYKCZImiZPyLGQBGRYDY29t
+    MRkwFwYKCZImiZPyLGQBGRYJbWVkaW1wYWN0MSgwJgYDVQQDEx9NZWRJbXBhY3Qg
+    Q2VydGlmaWNhdGUgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+    CgKCAQEAtobB2hf96uAc1UrMaT0NbzrBwYW2sAAw4HoRntZyRrNdtUZkG2fhJyFu
+    cXKnJxQoXJxkk29tXoDhB8xjzbcRAvrTx9TqBaD5uD7Vo7L8qledxlgIN6JvJMbg
+    n2z0/zbN3u6BlSJMOiVOhBAd2vphBKG3yvJg9Ax7v24rSM9dZpXBFigJLHBC/Y9t
+    9oiDMLLSeje9lr9ZRKQjQi2wiidgR/Uw4dRb4gPD5g7oAPsUUq02qXz890vsasiO
+    87sQeY458Oge3tDVSNLsWMHplzKJb/EYviW2oPG1/NzTDGAckAfbuwk29EZ8Xpvk
+    pymQyDuhPT0A3bXbxc6EaWoU1KVMkQIDAQABo4IDTTCCA0kwEgYJKwYBBAGCNxUB
+    BAUCAwIAAzAjBgkrBgEEAYI3FQIEFgQUTf96hMS9OOgo0lt2ok/ekF3sjzQwHQYD
+    VR0OBBYEFA5ZPbxfG9SAXwT4XN2SnzWnnyDmMBkGCSsGAQQBgjcUAgQMHgoAUwB1
+    AGIAQwBBMAsGA1UdDwQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaA
+    FO+1C9XGDVSE4J9mmwnmT6OYh53IMIHIBgNVHR8EgcAwgb0wgbqggbeggbSGWGh0
+    dHA6Ly9wdjFtZWRkYzEubWVkaW1wYWN0LmNvbS9DZXJ0RW5yb2xsL01lZEltcGFj
+    dCUyMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eS5jcmyGWGh0dHA6Ly9w
+    djFtZWRkYzIubWVkaW1wYWN0LmNvbS9DZXJ0RW5yb2xsL01lZEltcGFjdCUyMFJv
+    b3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eS5jcmwwggHIBggrBgEFBQcBAQSC
+    AbowggG2MIHLBggrBgEFBQcwAoaBvmxkYXA6Ly8vQ049TWVkSW1wYWN0JTIwUm9v
+    dCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5LENOPUFJQSxDTj1QdWJsaWMlMjBL
+    ZXklMjBTZXJ2aWNlcyxDTj1TZXJ2aWNlcyxDTj1Db25maWd1cmF0aW9uLERDPU1l
+    ZGltcGFjdCxEQz1jb20/Y0FDZXJ0aWZpY2F0ZT9iYXNlP29iamVjdENsYXNzPWNl
+    cnRpZmljYXRpb25BdXRob3JpdHkwcgYIKwYBBQUHMAKGZmh0dHA6Ly9wdjFtZWRk
+    YzEvQ2VydEVucm9sbC9wdjFtZWRvY2ExLm1lZGltcGFjdC5jb21fTWVkSW1wYWN0
+    JTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5KDEpLmNydDByBggrBgEF
+    BQcwAoZmaHR0cDovL3B2MW1lZGRjMi9DZXJ0RW5yb2xsL3B2MW1lZG9jYTEubWVk
+    aW1wYWN0LmNvbV9NZWRJbXBhY3QlMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRo
+    b3JpdHkoMSkuY3J0MA0GCSqGSIb3DQEBCwUAA4ICAQBGwRA7C6SX53Y8AqyxBetF
+    mQN+78A/vBEkPHEY487/gQWWVvi1MBi1AoskdNbkEJo5qn2Fy6Y4yyWReNWWCILP
+    4Bs6eCvDa+8yIYL35Nckt2FOPDrhk4I1Trc6dewyGycz8XYmRFgOLXj3f7o3IZTv
+    YIBC6bgaJVceClFmUSJZyMoyN9oWOsuzamsIakguuNz0n04HjUzYyA80gcKQZK7Q
+    u1yUnULRbZiTOLU+uurFyriglciEL31kPVVL2ixG6h7XLi/wtdck70uiAgn7RhNf
+    Z3ipL0Uew/5H74QYyHa4hIptfQo/DJ0B80jhWklAbu7M1VUPMcmYTC1Gsa76HLp2
+    t5r5m5rdBL4wlpNyKX3U2oi1+z0JNmXva3sccs1LbObSMSyzqlVDee7YoS3qJHHg
+    dmuMSwuj8e0APne5sAFtbwHl6HY+NedgEFmM4SWOjY1A6MBMcP7+XrauISSOBFen
+    oUc6jzu7PTE9kERtMxJxXyz368x4519RnPFlhslXBnANe0cc1UfYNtGXfUPHzaNI
+    myKp0p/xbAOynmHFjr6LHfq4sf+oaGxRQCuyRrfRoy6+z3ccwcoPihwSSsOEP+UN
+    9ubhXsBDi4RO+vQj8nhuR4MW0VQfU0cHOuVa6Qz2HL6PMahpx+KyvdbfVOfJ+GPN
+    21CD1KLdBN2MRyrbfXGFaA==
+    -----END CERTIFICATE-----
+  medimpact-intermediate-2.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIHWjCCBUKgAwIBAgIKYRn/JgABAAAACDANBgkqhkiG9w0BAQsFADAvMS0wKwYD
+    VQQDEyRNZWRJbXBhY3QgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwHhcNMTYw
+    NTMxMjIwNTAyWhcNMjEwNTMxMjIxNTAyWjBaMRMwEQYKCZImiZPyLGQBGRYDY29t
+    MRkwFwYKCZImiZPyLGQBGRYJbWVkaW1wYWN0MSgwJgYDVQQDEx9NZWRJbXBhY3Qg
+    Q2VydGlmaWNhdGUgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+    CgKCAQEAsi/q+CR+lWFjIoLbEiWiOxsD8ZCN0HpHyYNEYHjAb61eYoX3ewX7GOz1
+    g+H0SVCSv4QU/lveAetGVfUM4Po6AWagvJGjMtwLcgrevMh1PKDxpcu2YPkrBpbZ
+    b+ye0R0jgC1y/N41H8xZqSZzWaoj7LPuGF7Ozjv6d9irlpzQ0hAlQb9INHkS0viu
+    /PtmTAxqMeX7BpaVqkCM2LmBzlVNTDNGRO+E1LwVsyMQH/ovupTfIuO53aoKsOb8
+    INU7SKJH90qyfHS8F85YA6RDOkzdqQoWX/HwnGtTwKgwSGkeg8CUByntDPOWxwRc
+    U/Om2vW0ECbX+6wDHcfeBqHKjPNFlwIDAQABo4IDSzCCA0cwEAYJKwYBBAGCNxUB
+    BAMCAQIwIwYJKwYBBAGCNxUCBBYEFO7Q6YsodQYgF21NrHWo9gNcJkI8MB0GA1Ud
+    DgQWBBQhXsRl89/l8PAtI0wLvIleG2hwCjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBi
+    AEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAfBgNVHSMEGDAWgBTv
+    tQvVxg1UhOCfZpsJ5k+jmIedyDCByAYDVR0fBIHAMIG9MIG6oIG3oIG0hlhodHRw
+    Oi8vcHYxbWVkZGMxLm1lZGltcGFjdC5jb20vQ2VydEVucm9sbC9NZWRJbXBhY3Ql
+    MjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHkuY3JshlhodHRwOi8vcHYx
+    bWVkZGMyLm1lZGltcGFjdC5jb20vQ2VydEVucm9sbC9NZWRJbXBhY3QlMjBSb290
+    JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHkuY3JsMIIByAYIKwYBBQUHAQEEggG6
+    MIIBtjCBywYIKwYBBQUHMAKGgb5sZGFwOi8vL0NOPU1lZEltcGFjdCUyMFJvb3Ql
+    MjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSxDTj1BSUEsQ049UHVibGljJTIwS2V5
+    JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1NZWRp
+    bXBhY3QsREM9Y29tP2NBQ2VydGlmaWNhdGU/YmFzZT9vYmplY3RDbGFzcz1jZXJ0
+    aWZpY2F0aW9uQXV0aG9yaXR5MHIGCCsGAQUFBzAChmZodHRwOi8vcHYxbWVkZGMx
+    L0NlcnRFbnJvbGwvcHYxbWVkb2NhMS5tZWRpbXBhY3QuY29tX01lZEltcGFjdCUy
+    MFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSgxKS5jcnQwcgYIKwYBBQUH
+    MAKGZmh0dHA6Ly9wdjFtZWRkYzIvQ2VydEVucm9sbC9wdjFtZWRvY2ExLm1lZGlt
+    cGFjdC5jb21fTWVkSW1wYWN0JTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9y
+    aXR5KDEpLmNydDANBgkqhkiG9w0BAQsFAAOCAgEAGkmUYSJborW32x3wm/hoZtj2
+    qhV/bEPwck8tmWLKyvzLqe4KiAaOmz1aVuZ3p4HWLJ0kIXfco7p46cJy11XWEBez
+    2SQH9KdnEQ+Uw0tmMaByCOYppEwiOtW+y/j/cVRXuvjGxaPzIzHeHduoiTeQ6piq
+    3bK0Q1/ePWNN5Rcsb01KwUUz6o7E87LaCHR/KfrCAZOypQvL31jWtkKhifUxaUTf
+    Kj7+YwgXaxhcGCInNfB1m7gT+gIPOfF7bh2xacUHLAFrPyBuggEykIEV2sBUPk/Q
+    w6ATOyBlmVEz9fWuETo1ZHVEEiYBFe+ODVFI02DwKh+sIzLZ9a+ZQtuWdPN/5912
+    n6bxdpy970grZfcVFE85PmikO9k740SIjjOgI4nDMK/VGQl+xn5OzkGWLn51s4cr
+    nYnQ5LnXBHw8e8wvWgNl3wV5W1U7SNIUuET/CxkVQFG4KK4OfE3Ga8FZ4ZtYxvkn
+    eMO6rM2HuirmYmKiGo1iYTK+lRksOqtf61jk8CC8tMl8azqA48Ok95dbWkBJzZso
+    rcTd9ISLb9iA2cgU9ppi/wsU5bx3P9Jm5ywZ6ZOr3M7IizxuJegsJ9yd+sod9XXP
+    4HR2EVgTRdhkmFQAeZ9xi5KEM5eftuppn562FLEwfschgjaOA9pyRmov9pNGwQdo
+    XSFtfjbrRKmu8zfdiqg=
+    -----END CERTIFICATE-----
+  medimpact-subca1-2019.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIGVDCCBDygAwIBAgIKSmOzywABAAAACTANBgkqhkiG9w0BAQsFADAvMS0wKwYD
+    VQQDEyRNZWRJbXBhY3QgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwHhcNMTkw
+    MTAzMjEzNjIyWhcNMjYwMTAzMjE0NjIyWjBLMRMwEQYKCZImiZPyLGQBGRYDY29t
+    MRkwFwYKCZImiZPyLGQBGRYJbWVkaW1wYWN0MRkwFwYDVQQDExBNZWRJbXBhY3Qt
+    U3ViQ0ExMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmynUO7qNtWST
+    Hi3/pIdNw8SLeUn0uQI04pQs5gzihGCwFcR/gCR6ShrPiVOJmVbgMzYQPtRiJ7LN
+    EYZFEncCZsq/Rb8q+Ca/SnqEgFbi7JJkuoIRN4ccQ6sKh9JCIjhhL/GiWSgqrQU1
+    bccvPk7W3FOD99eV+4IfVX2+o6mwUyfM8085w2TTT5GvE6eAwvX9M2RNaO3tkzHo
+    BTvZkNsNyYAUSjZ0Re4JViF8faAnYym0fakrnA3IparoFOyy4otmZ4IUlQMpAssJ
+    Fzt3CUJC4G1xKzgdZLvhLUzMEXYysVUPklTHM85wTO93unCJRTuIobKF2JjS8tyX
+    XeK3kfR9lQIDAQABo4ICVDCCAlAwEAYJKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYE
+    FC/PSAVZWolY4H5bl0LBN8rO989PMBkGCSsGAQQBgjcUAgQMHgoAUwB1AGIAQwBB
+    MAsGA1UdDwQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaAFO+1C9XG
+    DVSE4J9mmwnmT6OYh53IMGMGA1UdHwRcMFowWKBWoFSGUmh0dHA6Ly9jcmwubWVk
+    aW1wYWN0LmNvbS9DZXJ0RW5yb2xsL01lZEltcGFjdCUyMFJvb3QlMjBDZXJ0aWZp
+    Y2F0ZSUyMEF1dGhvcml0eS5jcmwwggFcBggrBgEFBQcBAQSCAU4wggFKMIHLBggr
+    BgEFBQcwAoaBvmxkYXA6Ly8vQ049TWVkSW1wYWN0JTIwUm9vdCUyMENlcnRpZmlj
+    YXRlJTIwQXV0aG9yaXR5LENOPUFJQSxDTj1QdWJsaWMlMjBLZXklMjBTZXJ2aWNl
+    cyxDTj1TZXJ2aWNlcyxDTj1Db25maWd1cmF0aW9uLERDPU1lZGltcGFjdCxEQz1j
+    b20/Y0FDZXJ0aWZpY2F0ZT9iYXNlP29iamVjdENsYXNzPWNlcnRpZmljYXRpb25B
+    dXRob3JpdHkwegYIKwYBBQUHMAGGbmh0dHA6Ly9jcmwubWVkaW1wYWN0LmNvbS9D
+    ZXJ0RW5yb2xsL3B2MW1lZG9jYTEubWVkaW1wYWN0LmNvbV9NZWRJbXBhY3QlMjBS
+    b290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHkoMSkuY3J0MA0GCSqGSIb3DQEB
+    CwUAA4ICAQC6r9BOlp4u3mPdWj0tBoER+SSGoEvuSApoParqdw6yiRTX+cpHd2ay
+    zJ+26M11SI5H93mbH1nTwdem3euxoOUWiO3ekFf3bGK8Bw2GUMWKUzoSDAyuP8BD
+    VHz0wcxyVQo5FDi81oNTkrkJ1Qw6EVo6OEjnPyCPlPJRZxGMpF5bZAfX22ifvXVz
+    gaS+26SdUkHvQhHDgsEYTsZbvVo47O/mDjxjCYpSq4dNbOHhXj3RPqK7pyXk1CEX
+    c6FRADM9bMuvieAc/q+giaIG0EwJXJIuLX1LxtAEi41/iUjz71isK6aW4YjrF+F5
+    a4o/wZXTpCCWIoMK3fulb5Uppz/b1/sy1sRG40IivL/dNDBqtMSYgkxi1XdlTdOZ
+    Jz+6Q5tvomNPJkiZcFmeh4Fj1096YX0w1N77MmBIexxLhoQ2AadPzUwByZnAP5qp
+    jaMlUpjn3p+Bnyb4M+cKQwPpaXdFFfdWkctf0364XG6hRxgjnezY1Ki0plbX63Ic
+    C+57S/5iGTVXvo7k9ROiaao8C34RA3Qoc0UD8AMBR59LVD35AWq80Flx3Rmc5LUn
+    XczTCPhh1z3v+pyUcMdDn/iu1R04ume6WLTI3jpnm1xfEoGP8e9Lw6+bhPNKHagA
+    fCUJLg/wJD7X+6+opwSW2hdddc6iDfIwHQiIRldskfKpdS2mf/121A==
+    -----END CERTIFICATE-----
+  medimpact-subca2-2019.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIGVDCCBDygAwIBAgIKSwllMgABAAAACjANBgkqhkiG9w0BAQsFADAvMS0wKwYD
+    VQQDEyRNZWRJbXBhY3QgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwHhcNMTkw
+    MTA0MDAzNzIxWhcNMjYwMTA0MDA0NzIxWjBLMRMwEQYKCZImiZPyLGQBGRYDY29t
+    MRkwFwYKCZImiZPyLGQBGRYJbWVkaW1wYWN0MRkwFwYDVQQDExBNZWRpbXBhY3Qt
+    U3ViQ0EyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApFr1NsAGVwv3
+    WTbJu8jSwcX7FGkWLfi+ZDQf/MkhfZ5wpktfC/Kn+xF2i7rPWroGRhKl0OPJbB1c
+    iibeQpreKKPl/w+2dpm1z/oUFjJCbb1vyvivJnqvdEpHPNfido31SyzvM2Lnew87
+    w5iFeGAZTTQWTo+HFm33u3XPfmyBv7ghjgI1ImtLV6/gqNfd+NIV1Lk0He3wjAtp
+    D8yf++oO+zVjEYqWAOKBqxHWdsSiGI6rXTP+6wZttfCBWcDzfHQ+DUjhDwol+JUY
+    FoaOqHYsMs5tVdeO1KYjtURh7Ci4ffI/o7uGlp8bRlVutRQdbgb1B4qZC3GlYDrR
+    Mlu2glrWgwIDAQABo4ICVDCCAlAwEAYJKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYE
+    FEJie/IgPcOIgUh3c0cu4h0oVbONMBkGCSsGAQQBgjcUAgQMHgoAUwB1AGIAQwBB
+    MAsGA1UdDwQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaAFO+1C9XG
+    DVSE4J9mmwnmT6OYh53IMGMGA1UdHwRcMFowWKBWoFSGUmh0dHA6Ly9jcmwubWVk
+    aW1wYWN0LmNvbS9DZXJ0RW5yb2xsL01lZEltcGFjdCUyMFJvb3QlMjBDZXJ0aWZp
+    Y2F0ZSUyMEF1dGhvcml0eS5jcmwwggFcBggrBgEFBQcBAQSCAU4wggFKMIHLBggr
+    BgEFBQcwAoaBvmxkYXA6Ly8vQ049TWVkSW1wYWN0JTIwUm9vdCUyMENlcnRpZmlj
+    YXRlJTIwQXV0aG9yaXR5LENOPUFJQSxDTj1QdWJsaWMlMjBLZXklMjBTZXJ2aWNl
+    cyxDTj1TZXJ2aWNlcyxDTj1Db25maWd1cmF0aW9uLERDPU1lZGltcGFjdCxEQz1j
+    b20/Y0FDZXJ0aWZpY2F0ZT9iYXNlP29iamVjdENsYXNzPWNlcnRpZmljYXRpb25B
+    dXRob3JpdHkwegYIKwYBBQUHMAGGbmh0dHA6Ly9jcmwubWVkaW1wYWN0LmNvbS9D
+    ZXJ0RW5yb2xsL3B2MW1lZG9jYTEubWVkaW1wYWN0LmNvbV9NZWRJbXBhY3QlMjBS
+    b290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHkoMSkuY3J0MA0GCSqGSIb3DQEB
+    CwUAA4ICAQAZwghQCr5rxGUBRjup9JynqprKzDjAWW1B17YTF2wT0v3uSH/ccZQN
+    wVeu36zpEijwlNTECbn+srX0pPZG8+pdUzRqpKFEKvjLguhKE4psbruGrDFGjEyF
+    8xRuRRRGfNHvAxOYuexAvzgoRWWK07LSkNTXzHpPuJ6HnFodGNrpk1j3uIJ1/Qjs
+    SBNdsjBXj4lkH+FvDbQI3ah9LpVCR05fDDQHHFoEage0GAcBgdhEnJEqMB4Jx5hi
+    5kWnmVFatEW2IVqhLHHSRFvAs7itz/MeeWwfiaGfIaRgvAylWZ5mxJpeyS6PxScn
+    //VFVTZXsvXCcZjcpS+eVtMvAUnDL/KSzOrO04njQ4M0iZMAt89lNd3sH/zD91Vl
+    +IpCYOSw/FuSmPk4rg9w9TEIXfF7wrWpJ9dhGTp07R9SNiR69sLJ+AyVfkQ2gvSo
+    eHmK8KuumqXbRnAf6/Mf84bv4vK2voqR9HpfpzTRi2bf1MHWEPsq7jyp4WLoNroE
+    8kxfZVl2YMm9xLWXmFkqd6CdgdAoG3wF5DkJ0HCO9lfjwuofLWGVbrEzoLa3Yk06
+    DvrwleEFmfks/89k8w0M7jvYdwQAese1HVS/hveBZpfP+UNTS+CtVOa1MOXnnEP2
+    eO3dEcxFDRJcTSo7hjEtmG0DE8DtEOt2ySfxIwSbjmN3xKf0jFB81A==
+    -----END CERTIFICATE-----
+  medimpact-root.crt: |
+    -----BEGIN CERTIFICATE-----
+    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
+    -----END CERTIFICATE-----
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+  # name: install-mi-cacerts
+  # namespace: kube-system
+# type: Opaque
+# stringData:
+  # setup.sh: |
+    # echo "$MEDIMPACT_INTERMEDIATE_1" > /usr/local/share/ca-certificates/medimpact-intermediate-1.crt && echo "$MEDIMPACT_INTERMEDIATE_2" > /usr/local/share/ca-certificates/medimpact-intermediate-2.crt && echo "$MEDIMPACT_SUBCA1_2019" > /usr/local/share/ca-certificates/medimpact-subca1-2019.crt && echo "$MEDIMPACT_SUBCA2_2019" > /usr/local/share/ca-certificates/medimpact-subca2-2019.crt && echo "$MEDIMPACT_ROOT" > /usr/local/share/ca-certificates/medimpact-root.crt && update-ca-certificates && systemctl restart containerd
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: kube-system
+  name: install-mi-cacerts
+  labels:
+    app: install-mi-cacerts
+spec:
+  selector:
+    matchLabels:
+      app: install-mi-cacerts
+  template:
+    metadata:
+      labels:
+        app: install-mi-cacerts
+    spec:
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Exists"
+        effect: "NoSchedule"
+      hostPID: true
+      hostNetwork: true
+      initContainers:
+      - name: init-node
+        command: ["nsenter"]
+        # args: ["--mount=/proc/1/ns/mnt", "--", "sh", "-c", "systemctl restart containerd"]
+        args: ["--mount=/proc/1/ns/mnt", "--", "sh", "-c", "$(SETUP_SCRIPT)"]
+        image: medusw2prd001.azurecr.io/dockerhub/debian:bullseye
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MEDIMPACT_INTERMEDIATE_1
+          valueFrom:
+            secretKeyRef:
+              name: install-mi-cacerts
+              key: medimpact-intermediate-1.crt
+        - name: MEDIMPACT_INTERMEDIATE_2
+          valueFrom:
+            secretKeyRef:
+              name: install-mi-cacerts
+              key: medimpact-intermediate-2.crt
+        - name: MEDIMPACT_SUBCA1_2019
+          valueFrom:
+            secretKeyRef:
+              name: install-mi-cacerts
+              key: medimpact-subca1-2019.crt
+        - name: MEDIMPACT_SUBCA2_2019
+          valueFrom:
+            secretKeyRef:
+              name: install-mi-cacerts
+              key: medimpact-subca2-2019.crt
+        - name: MEDIMPACT_ROOT
+          valueFrom:
+            secretKeyRef:
+              name: install-mi-cacerts
+              key: medimpact-root.crt
+        - name: SETUP_SCRIPT
+          valueFrom:
+            secretKeyRef:
+              name: install-mi-cacerts
+              key: setup.sh
+        securityContext:
+          privileged: true
+      containers:
+      - name: wait
+        image: k8s.gcr.io/pause:3.1

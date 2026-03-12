@@ -1,0 +1,113 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gravitee-dev
+  # annotations:
+    # scheduler.alpha.kubernetes.io/defaultTolerations: '[{"Key": "kubernetes.azure.com/scalesetpriority", "Operator": "Equal", "Value": "spot", "Effect": "NoSchedule"}]'
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    namespace: gravitee-dev
+---
+#total namespace quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-limit
+  namespace: gravitee-dev
+spec:
+  hard:
+    limits.cpu: 54000m
+    limits.memory: 80G
+    requests.cpu: 10000m
+    requests.memory: 42G
+---
+#individual container defaults
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit
+  namespace: gravitee-dev
+spec:
+  limits:
+  - default:
+      cpu: 150m
+      memory: 125M
+      ephemeral-storage: 5Gi
+    defaultRequest:
+      cpu: 50m
+      memory: 100M
+      ephemeral-storage: 100Mi
+    max:
+      ephemeral-storage: 10Gi
+    type: Container
+# ---
+# #default deny network policy
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: default-deny
+  # namespace: gravitee-dev
+# spec:
+  # podSelector: {}
+# ---
+# # Allow istio prometheus to istio sidecars
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+  # name: default-allow-istio-telemetry
+  # namespace: gravitee-dev
+# spec:
+  # ingress:
+    # - from:
+      # - namespaceSelector:
+          # matchLabels:
+            # namespace: monitoring
+        # podSelector:
+          # matchLabels:
+            # app: prometheus
+    # - from:
+      # - namespaceSelector:
+          # matchLabels:
+            # namespace: istio-system
+        # podSelector:
+          # matchLabels:
+            # app: prometheus
+      # ports:
+      # - port: 15090
+        # protocol: TCP
+  # podSelector: {}
+  # policyTypes:
+  # - Ingress
+---
+#bind AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_dev_gravitee-dev
+  namespace: gravitee-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  namespace: gravitee-dev
+  name: 30649458-f298-4ee7-80c3-9f1192f0dd43
+---
+#bind power-users AD group to the management role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc:kube_cluster-power-users
+  namespace: gravitee-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medimpact:namespace-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  namespace: gravitee-dev
+  name: 5becc647-277b-422b-b385-8b9ba00d9b5e

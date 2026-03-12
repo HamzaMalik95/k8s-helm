@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-controller-haproxy-healthcheck
+  namespace: ingress-nginx
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      nodePort: 30081
+      port: 8080
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/component: controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-controller-ext-haproxy-healthcheck
+  namespace: ingress-nginx
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      nodePort: 31081
+      port: 8080
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: ingress-nginx-ext
+    app.kubernetes.io/instance: ingress-nginx-ext
+    app.kubernetes.io/component: controller

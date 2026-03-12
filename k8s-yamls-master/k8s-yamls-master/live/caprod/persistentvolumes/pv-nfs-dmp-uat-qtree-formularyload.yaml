@@ -1,0 +1,25 @@
+# Filename: pv-<storage type>-<namespace>-<volume name>.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs.dmp-uat.qtree-formularyload
+  # annotations:
+    # volume.beta.kubernetes.io/mount-options: rsize=8192,wsize=8192,timeo=14,intr,vers=3
+  labels: 
+    volname: dmp-uat.qtree-formularyload
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - rsize=8192
+    - wsize=8192
+    - timeo=14
+    - intr
+    - vers=3
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    server: 10.13.155.246
+    path: "/vol_pv1medvfiler3_uat_formularyload/qtree_formularyload"
